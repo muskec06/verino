@@ -19,10 +19,10 @@ Rules: tasks run in order; one branch/PR per task; a task is ticked only when ev
 
 ## T2 — `hardware.yaml` schema (`verino-hw/1`)
 
-- [ ] `schemas/verino-hw-1.schema.json` with `schema, source, board, board_rev, module, chip_rev, hw_rev, memory, buses, devices, ack, reserved, validation`.
-- [ ] Pin assignment object `{ pin, origin, locked? }`, `origin ∈ {schematic, user, board_default, solver, cubemx}`.
-- [ ] `src/verino/model/`: YAML → typed model (dataclasses) keeping line/column info for messages.
-- [ ] `examples/hw/`: at least 3 valid and 3 invalid examples; schema tests.
+- [x] `schemas/verino-hw-1.schema.json` with `schema, source, board, board_rev, module, chip_rev, hw_rev, memory, buses, devices, ack, reserved, validation`.
+- [x] Pin assignment object `{ pin, origin, locked? }`, `origin ∈ {schematic, user, board_default, solver, cubemx}`.
+- [x] `src/verino/model/`: YAML → typed model (dataclasses) keeping line/column info for messages.
+- [x] `examples/hw/`: at least 3 valid and 3 invalid examples; schema tests.
 
 **Done when:** invalid examples produce messages with line numbers; round-trip writing preserves comments (tested).
 
