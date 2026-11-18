@@ -1,0 +1,7 @@
+# W-STRAP-001: must trigger on the marked line.
+schema: verino-hw/1
+module: esp32-s3-wroom-1-n8r8
+uses: []
+
+devices:
+  sonar: {part: hc-sr04, kind: gpio, trig: GPIO46}  # <- W-STRAP-001
