@@ -1,0 +1,33 @@
+# ESP32-S3-WROOM-1-N16R8 module data. Reference: docs/chipdata.md.
+schema: verino-module/1
+module: esp32-s3-wroom-1-n16r8
+chip: esp32s3
+manual:
+  part_number:
+    value: ESP32-S3-WROOM-1-N16R8
+    provenance:
+      kind: datasheet
+      source: esp32-s3-wroom-1-datasheet@1.8
+      ref: "Table 1-1 (p. 3)"
+  memory:
+    flash: {size: 16MB, interface: quad, max_freq_mhz: 80}
+    psram: {size: 8MB, interface: octal, in_package: true}
+    vdd_spi_volts: 3.3
+    provenance:
+      kind: datasheet
+      source: esp32-s3-wroom-1-datasheet@1.8
+      ref: "Table 1-1 (p. 3); notes 3, 4 and 7 (p. 4)"
+      note: "Note 7 states VDD_SPI is 1.8 V only for the N16R16VA variants, so this variant uses 3.3 V."
+  exposed_gpios:
+    pins: [GPIO0, GPIO1, GPIO2, GPIO3, GPIO4, GPIO5, GPIO6, GPIO7, GPIO8, GPIO9, GPIO10, GPIO11, GPIO12, GPIO13, GPIO14, GPIO15, GPIO16, GPIO17, GPIO18, GPIO19, GPIO20, GPIO21, GPIO35, GPIO36, GPIO37, GPIO38, GPIO39, GPIO40, GPIO41, GPIO42, GPIO43, GPIO44, GPIO45, GPIO46, GPIO47, GPIO48]
+    provenance:
+      kind: datasheet
+      source: esp32-s3-wroom-1-datasheet@1.8
+      ref: "Table 3-1 (pp. 11-12)"
+  internal_pins:
+    pins: {GPIO35: octal_psram, GPIO36: octal_psram, GPIO37: octal_psram}
+    note: "Connected to the octal SPI PSRAM; not available for other uses."
+    provenance:
+      kind: datasheet
+      source: esp32-s3-wroom-1-datasheet@1.8
+      ref: "Table 3-1 note b (p. 12)"
