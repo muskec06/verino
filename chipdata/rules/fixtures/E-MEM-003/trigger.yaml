@@ -1,0 +1,7 @@
+# E-MEM-003: must trigger on the marked line (the module has 8 MB flash).
+schema: verino-hw/1
+module: esp32-s3-wroom-1-n8r8
+uses: []
+
+memory:
+  flash: {size: 16MB, mode: qio, freq: 80m, origin: user}  # <- E-MEM-003

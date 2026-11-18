@@ -1,0 +1,8 @@
+# E-MEM-002: must not trigger (ESP-IDF two_ota table).
+schema: verino-hw/1
+module: esp32-s3-wroom-1-n8r8
+uses: []
+
+memory:
+  partitions:
+    preset: two_ota

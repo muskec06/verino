@@ -153,3 +153,30 @@ rules:
     level: 2
     phase: '0'
     facts: [chips.manual.io_voltage, parts.manual.supply, parts.manual.pins]
+  E-MEM-001:
+    severity: error
+    name: partitions-fit
+    summary: The partition table does not fit in the flash of the module.
+    level: 1
+    phase: '0'
+    facts: [modules.manual.memory, idf/partitions.yaml]
+  E-MEM-002:
+    severity: error
+    name: ota-layout
+    summary: The partition table has OTA partitions but lacks an app slot or the OTA data partition that OTA needs.
+    level: 1
+    phase: '0'
+    facts: [idf/partitions.yaml]
+  E-MEM-003:
+    severity: error
+    name: memory-matches-module
+    summary: Flash or PSRAM settings in memory differ from what the module has.
+    level: 1
+    phase: '0'
+    facts: [modules.manual.memory]
+  W-VAL-001:
+    severity: warning
+    name: validation-stale
+    summary: The validation block was written for a different version of the file.
+    level: 0
+    phase: '0'

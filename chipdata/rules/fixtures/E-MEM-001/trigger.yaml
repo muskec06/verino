@@ -1,0 +1,11 @@
+# E-MEM-001: must trigger on the marked line (8 MB flash; storage ends at 0x810000).
+schema: verino-hw/1
+module: esp32-s3-wroom-1-n8r8
+uses: []
+
+memory:
+  partitions:
+    custom:
+      - {name: nvs, type: data, subtype: nvs, size: 24K}
+      - {name: factory, type: app, subtype: factory, size: 4M}
+      - {name: storage, type: data, subtype: spiffs, size: 4M}  # <- E-MEM-001
