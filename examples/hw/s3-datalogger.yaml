@@ -1,0 +1,46 @@
+# Data logger on a bare ESP32-S3-WROOM-1-N16R8 module (custom PCB, no dev board).
+# Clean example: `verino pins check` reports no findings, so `verino pins render` works.
+schema: verino-hw/1
+source: native
+module: esp32-s3-wroom-1-n16r8
+hw_rev: B
+uses: [wifi]
+
+memory:
+  flash: {size: 16MB, mode: qio, freq: 80m, origin: module}
+  psram: {size: 8MB, mode: octal, freq: 80m, origin: module}
+  cpu_freq_mhz: 240
+  partitions:
+    custom:
+      - {name: nvs, type: data, subtype: nvs, size: 24K}
+      - {name: otadata, type: data, subtype: ota, size: 8K}
+      - {name: phy_init, type: data, subtype: phy, size: 4K}
+      - {name: app0, type: app, subtype: ota_0, size: 4M}
+      - {name: app1, type: app, subtype: ota_1, size: 4M}
+      - {name: storage, type: data, subtype: littlefs, size: rest}
+
+buses:
+  i2c0:
+    kind: i2c
+    sda: {pin: GPIO8, origin: schematic, locked: true}
+    scl: {pin: GPIO9, origin: schematic, locked: true}
+    freq_hz: 400000
+    pullups: external_4k7
+  spi2:
+    kind: spi
+    host: SPI2
+    sclk: {pin: GPIO12, origin: user}
+    mosi: {pin: GPIO11, origin: user}
+    miso: {pin: GPIO13, origin: user}
+  uart1:
+    kind: uart
+    tx: {pin: GPIO17, origin: schematic, locked: true}   # RS-485 transceiver
+    rx: {pin: GPIO18, origin: schematic, locked: true}
+    baud: 9600
+
+devices:
+  env: {part: bme280, bus: i2c0, addr: 0x76}
+  sd: {part: sdcard, bus: spi2, cs: GPIO10, freq_hz: 20000000}
+  probe: {part: ds18b20, kind: onewire, pin: GPIO4}
+  pump: {part: grove-relay, kind: gpio, pin: {pin: GPIO21, origin: user}}
+  soil: {part: analog_in, kind: adc, pin: GPIO1}
