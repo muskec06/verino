@@ -1,0 +1,12 @@
+# Invalid: the device refers to a bus that is not defined.
+schema: verino-hw/1
+module: esp32-s3-wroom-1-n8r8
+
+buses:
+  i2c0:
+    kind: i2c
+    sda: {pin: GPIO8, origin: board_default}
+    scl: {pin: GPIO9, origin: board_default}
+
+devices:
+  sd: {part: sdcard, bus: spi2, cs: GPIO10}

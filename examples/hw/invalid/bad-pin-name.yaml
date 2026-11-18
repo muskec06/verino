@@ -1,0 +1,6 @@
+# Invalid: pin names are canonical (GPIO8), not zero-padded.
+schema: verino-hw/1
+module: esp32-s3-wroom-1-n8r8
+
+devices:
+  soil_temp: {part: ds18b20, kind: onewire, pin: GPIO04}
