@@ -1,0 +1,67 @@
+[build-system]
+requires = ["hatchling>=1.27"]
+build-backend = "hatchling.build"
+
+[project]
+name = "verino"
+dynamic = ["version"]
+description = "Verified hardware toolkit for ESP32: pin planning, checks and code generation."
+requires-python = ">=3.11"
+license = "Apache-2.0"
+authors = [{ name = "Verino contributors" }]
+keywords = ["esp32", "esp32-s3", "embedded", "pinout", "hardware"]
+classifiers = [
+  "Development Status :: 2 - Pre-Alpha",
+  "Environment :: Console",
+  "Intended Audience :: Developers",
+  "Operating System :: OS Independent",
+  "Programming Language :: Python :: 3",
+  "Programming Language :: Python :: 3.11",
+  "Programming Language :: Python :: 3.12",
+  "Programming Language :: Python :: 3.13",
+  "Topic :: Software Development :: Embedded Systems",
+  "Typing :: Typed",
+]
+dependencies = [
+  "ruamel.yaml>=0.18",
+  "jsonschema>=4.21",
+  "typer>=0.12",
+  "jinja2>=3.1",
+  "mcp>=1.2",
+]
+
+[project.optional-dependencies]
+dev = [
+  "pytest>=8",
+  "ruff>=0.6",
+  "mypy>=1.11",
+]
+
+[project.scripts]
+verino = "verino.cli:app"
+vrn = "verino.cli:app"
+
+[project.urls]
+Homepage = "https://verino.dev"
+
+[tool.hatch.version]
+path = "src/verino/__init__.py"
+
+[tool.hatch.build.targets.wheel]
+packages = ["src/verino"]
+
+[tool.pytest.ini_options]
+testpaths = ["tests"]
+addopts = "-ra --strict-markers"
+
+[tool.ruff]
+line-length = 100
+target-version = "py311"
+
+[tool.ruff.lint]
+select = ["E", "F", "W", "I", "UP", "B", "SIM", "RUF"]
+
+[tool.mypy]
+strict = true
+python_version = "3.11"
+files = ["src/verino"]
