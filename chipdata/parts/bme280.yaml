@@ -1,0 +1,19 @@
+# Bosch BME280 humidity, pressure and temperature sensor. Reference: docs/chipdata.md.
+schema: verino-part/1
+part: bme280
+title: Bosch BME280 combined humidity and pressure sensor
+manual:
+  interface:
+    kinds: [i2c, spi]
+    provenance:
+      kind: datasheet
+      source: bme280-datasheet@1.24
+      ref: "Section 1 Specification overview (p. 2)"
+  supply:
+    min_volts: 1.2
+    max_volts: 3.6
+    provenance:
+      kind: datasheet
+      source: bme280-datasheet@1.24
+      ref: "Table 1 (p. 8), VDDIO; Table 5 (p. 13), interface pins at most VDDIO + 0.3 V"
+      note: "Interface supply VDDIO; the digital interface pins follow VDDIO."

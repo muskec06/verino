@@ -41,3 +41,17 @@ def test_module_view() -> None:
     }
     assert DB.module("no-such-module") is None
     assert "esp32-s3-wroom-1-n8r8" in DB.modules()
+
+
+def test_part_view() -> None:
+    relay = DB.part("grove-relay")
+    assert relay is not None
+    assert relay.actuator and relay.safe_boot_level == "low"
+    assert relay.reset_imposes == {"pin": "pulled_low"}
+    sonar = DB.part("hc-sr04")
+    assert sonar is not None
+    assert sonar.supply == (5.0, 5.0) and sonar.supply_kind == "community"
+    assert sonar.pins["echo"].level == "supply"
+    assert DB.part("no-such-part") is None
+    chip = DB.chip("esp32s3")
+    assert chip is not None and chip.io_input_max_volts == 3.6

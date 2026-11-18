@@ -1,0 +1,32 @@
+# Worldsemi WS2812B addressable RGB LED. Reference: docs/chipdata.md.
+schema: verino-part/1
+part: ws2812
+title: Worldsemi WS2812B intelligent control LED
+manual:
+  interface:
+    kinds: [gpio]
+    provenance:
+      kind: datasheet
+      source: ws2812b-datasheet@adafruit-copy
+      ref: "General description (p. 1); PIN function (p. 2)"
+  supply:
+    min_volts: 3.5
+    max_volts: 5.3
+    provenance:
+      kind: datasheet
+      source: ws2812b-datasheet@adafruit-copy
+      ref: "Absolute Maximum Ratings (p. 2), power supply voltage VDD"
+  pins:
+    roles:
+      pin: {direction: input, note: "DIN; VIH is 0.7 x VDD (p. 3)."}
+    provenance:
+      kind: datasheet
+      source: ws2812b-datasheet@adafruit-copy
+      ref: "PIN function (p. 2); Electrical Characteristics (p. 3)"
+  reset_imposes:
+    roles: {pin: none}
+    note: "DIN input current is at most +/-1 uA, so the LED does not pull the line."
+    provenance:
+      kind: datasheet
+      source: ws2812b-datasheet@adafruit-copy
+      ref: "Electrical Characteristics (p. 3), input current II"

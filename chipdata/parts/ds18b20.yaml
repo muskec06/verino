@@ -1,0 +1,32 @@
+# Analog Devices (Maxim) DS18B20 1-Wire thermometer. Reference: docs/chipdata.md.
+schema: verino-part/1
+part: ds18b20
+title: DS18B20 1-Wire digital thermometer
+manual:
+  interface:
+    kinds: [onewire]
+    provenance:
+      kind: datasheet
+      source: ds18b20-datasheet@rev6
+      ref: "General Description (p. 1)"
+  supply:
+    min_volts: 3.0
+    max_volts: 5.5
+    provenance:
+      kind: datasheet
+      source: ds18b20-datasheet@rev6
+      ref: "Electrical Characteristics (p. 2), Supply Voltage VDD, local power"
+  pins:
+    roles:
+      pin: {direction: open_drain, level: pullup, note: "DQ data line; the high level is the pull-up supply VPU."}
+    provenance:
+      kind: datasheet
+      source: ds18b20-datasheet@rev6
+      ref: "Hardware Configuration (p. 5); Figure 3 (p. 5); Figure 7 (p. 7)"
+  reset_imposes:
+    roles: {pin: pulled_high}
+    note: "The 1-Wire bus requires a weak pull-up resistor (about 4.7 kOhm) on DQ."
+    provenance:
+      kind: datasheet
+      source: ds18b20-datasheet@rev6
+      ref: "Hardware Configuration (p. 5); Figure 7 (p. 7)"
