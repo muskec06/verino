@@ -39,12 +39,12 @@ Rules: tasks run in order; one branch/PR per task; a task is ticked only when ev
 
 ## T4 — Rule catalog (level 1 + selected level 2)
 
-- [ ] `chipdata/rules/rules.yaml`: rule ID, severity, short name, description, `provenance`, phase.
-- [ ] Level 1: pin exists, reserved pin, input-only, no internal pull, analog channel, ADC2 + Wi-Fi, peripheral count.
-- [ ] Level 2: strapping via `reset_imposes` (e.g. `E-STRAP-002`), actuator boot safety (`W-BOOT-010`), 5 V check (`io_voltage`).
-- [ ] `chipdata/parts/`: minimal device manifests (pin roles, `io_voltage`, `reset_imposes`, `actuator`) for bme280, ds18b20, ws2812, relay module, hc-sr04.
-- [ ] Intentional exceptions via `ack` (reason required).
-- [ ] `fixtures/<ID>/trigger.yaml` and `clean.yaml` for every rule; parametrized test.
+- [x] `chipdata/rules/rules.yaml`: rule ID, severity, short name, description, `provenance`, phase.
+- [x] Level 1: pin exists, reserved pin, input-only, no internal pull, analog channel, ADC2 + Wi-Fi, peripheral count.
+- [x] Level 2: strapping via `reset_imposes` (e.g. `E-STRAP-002`), actuator boot safety (`W-BOOT-010`), 5 V check (`io_voltage`).
+- [x] `chipdata/parts/`: minimal device manifests (pin roles, `io_voltage`, `reset_imposes`, `actuator`) for bme280, ds18b20, ws2812, relay module, hc-sr04.
+- [x] Intentional exceptions via `ack` (reason required).
+- [x] `fixtures/<ID>/trigger.yaml` and `clean.yaml` for every rule; parametrized test.
 
 **Done when:** every rule has both fixtures and they pass; an acknowledged rule appears as "acknowledged" in the report.
 

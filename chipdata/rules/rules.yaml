@@ -111,3 +111,45 @@ rules:
     summary: An acknowledgement matches no finding.
     level: 0
     phase: '0'
+  W-STRAP-001:
+    severity: warning
+    name: strap-unknown-level
+    summary: A strapping pin is used and the level the connection puts on it at power-up is unknown.
+    level: 2
+    phase: '0'
+    facts: [chips.manual.strapping, parts.manual.reset_imposes]
+  E-STRAP-002:
+    severity: error
+    name: strap-conflict
+    summary: The connection forces a strapping pin with an error-level boot function away from its safe level.
+    level: 2
+    phase: '0'
+    facts: [chips.manual.strapping, parts.manual.reset_imposes]
+  W-STRAP-003:
+    severity: warning
+    name: strap-conflict-warning
+    summary: The connection forces a strapping pin with a warning-level boot function away from its safe level.
+    level: 2
+    phase: '0'
+    facts: [chips.manual.strapping, parts.manual.reset_imposes]
+  I-STRAP-004:
+    severity: info
+    name: strap-info
+    summary: A strapping pin whose boot function only matters under an eFuse condition is used.
+    level: 2
+    phase: '0'
+    facts: [chips.manual.strapping]
+  W-BOOT-010:
+    severity: warning
+    name: actuator-boot-safety
+    summary: An actuator is on a pin that is pulled or glitches away from the actuator's safe level during boot.
+    level: 2
+    phase: '0'
+    facts: [chips.manual.boot_behavior, parts.manual.actuator]
+  E-VOLT-001:
+    severity: error
+    name: io-voltage
+    summary: A part drives a pin above the chip's IO voltage limit.
+    level: 2
+    phase: '0'
+    facts: [chips.manual.io_voltage, parts.manual.supply, parts.manual.pins]

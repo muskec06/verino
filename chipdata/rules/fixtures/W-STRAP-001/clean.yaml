@@ -1,0 +1,7 @@
+# W-STRAP-001: must not trigger.
+schema: verino-hw/1
+module: esp32-s3-wroom-1-n8r8
+uses: []
+
+devices:
+  led: {part: ws2812, pin: GPIO46}
