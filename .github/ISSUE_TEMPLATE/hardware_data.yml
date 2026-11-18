@@ -1,0 +1,42 @@
+name: Chip / board data
+description: Add or correct chip, module, board or rule data.
+labels: [hardware-data, triage]
+body:
+  - type: markdown
+    attributes:
+      value: |
+        A wrong pin fact is worse than a missing one. Every fact needs a source.
+  - type: dropdown
+    id: kind
+    attributes:
+      label: Kind
+      options: [Chip, Module, Board, Rule, Device manifest]
+    validations:
+      required: true
+  - type: input
+    id: target
+    attributes:
+      label: Chip / module / board / rule
+      placeholder: "esp32s3, esp32-s3-wroom-1-n16r8, esp32-s3-devkitc-1, E-STRAP-002"
+    validations:
+      required: true
+  - type: textarea
+    id: change
+    attributes:
+      label: What is missing or wrong?
+    validations:
+      required: true
+  - type: textarea
+    id: source
+    attributes:
+      label: Source
+      description: Document name, revision and page/section, or a link. For measurements, describe board, instrument and method.
+    validations:
+      required: true
+  - type: dropdown
+    id: provenance
+    attributes:
+      label: Provenance
+      options: [datasheet, errata, soc_caps, community, measured]
+    validations:
+      required: true

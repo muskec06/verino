@@ -1,0 +1,35 @@
+name: Bug report
+description: Something in the verino CLI, MCP server or skill does not work as expected.
+labels: [bug, triage]
+body:
+  - type: textarea
+    id: what
+    attributes:
+      label: What happened?
+      description: What did you run, what did you expect, what did you get?
+    validations:
+      required: true
+  - type: textarea
+    id: hardware
+    attributes:
+      label: Minimal hardware.yaml
+      description: The smallest file that reproduces the problem.
+      render: yaml
+  - type: textarea
+    id: output
+    attributes:
+      label: Output
+      description: Paste the output, preferably with `--json`.
+      render: text
+  - type: input
+    id: version
+    attributes:
+      label: verino version
+      placeholder: "verino --version"
+    validations:
+      required: true
+  - type: input
+    id: env
+    attributes:
+      label: OS and Python version
+      placeholder: "Windows 11, Python 3.12"

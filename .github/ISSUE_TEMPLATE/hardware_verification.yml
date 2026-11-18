@@ -1,0 +1,43 @@
+name: Hardware verification report
+description: Report how verino output behaved on real hardware.
+labels: [verification]
+body:
+  - type: input
+    id: board
+    attributes:
+      label: Board and revision
+      placeholder: "ESP32-S3-DevKitC-1 v1.1"
+    validations:
+      required: true
+  - type: input
+    id: chip
+    attributes:
+      label: Chip and chip revision
+      description: As reported by esptool (`esptool.py chip_id`).
+      placeholder: "ESP32-S3 (QFN56) rev v0.2"
+    validations:
+      required: true
+  - type: input
+    id: sdk
+    attributes:
+      label: SDK and version
+      placeholder: "ESP-IDF v5.5 / pioarduino 3.x"
+  - type: textarea
+    id: hardware
+    attributes:
+      label: hardware.yaml
+      render: yaml
+    validations:
+      required: true
+  - type: dropdown
+    id: result
+    attributes:
+      label: Result
+      options: [Works as reported, Tool missed a problem, Tool reported a false problem]
+    validations:
+      required: true
+  - type: textarea
+    id: details
+    attributes:
+      label: Details and logs
+      render: text
