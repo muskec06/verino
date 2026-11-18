@@ -1,0 +1,59 @@
+{
+  "schema": "verino-report/1",
+  "file": "examples/hw/esp32-weather.yaml",
+  "status": "error",
+  "exit_code": 2,
+  "counts": {
+    "errors": 1,
+    "warnings": 1,
+    "info": 1,
+    "acknowledged": 0
+  },
+  "findings": [
+    {
+      "id": "W-REF-002",
+      "severity": "warning",
+      "file": "examples/hw/esp32-weather.yaml",
+      "line": 4,
+      "col": 8,
+      "path": "board",
+      "message": "no board data for 'esp32-devkitc'",
+      "why": "Board aliases, on-board parts and defaults are unknown, so they are not checked.",
+      "fix": "use canonical GPIO names, or add chipdata/boards/esp32-devkitc.yaml.",
+      "pin": null,
+      "device": null,
+      "acknowledged": false,
+      "ack_reason": null
+    },
+    {
+      "id": "E-REF-001",
+      "severity": "error",
+      "file": "examples/hw/esp32-weather.yaml",
+      "line": 5,
+      "col": 9,
+      "path": "module",
+      "message": "no chip data for module 'esp32-wroom-32'",
+      "why": "Pin, memory and boot rules need the module and chip data; none of them can run.",
+      "fix": "use a supported module (esp32-s3-wroom-1-n16r8, esp32-s3-wroom-1-n8r8) or add chipdata/modules/esp32-wroom-32.yaml.",
+      "pin": null,
+      "device": null,
+      "acknowledged": false,
+      "ack_reason": null
+    },
+    {
+      "id": "I-ACK-001",
+      "severity": "info",
+      "file": "examples/hw/esp32-weather.yaml",
+      "line": 21,
+      "col": 5,
+      "path": "ack[0]",
+      "message": "acknowledgement of W-BOOT-010 for GPIO27 matches no finding",
+      "why": "A stale acknowledgement hides nothing today but may hide a real problem later.",
+      "fix": "remove it, or correct the rule ID, pin or device.",
+      "pin": null,
+      "device": null,
+      "acknowledged": false,
+      "ack_reason": null
+    }
+  ]
+}

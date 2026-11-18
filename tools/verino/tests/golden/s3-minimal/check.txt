@@ -1,0 +1,2 @@
+W-REF-002 examples/hw/s3-minimal.yaml:3:8 board: no board data for 'esp32-s3-devkitc-1'. Board aliases, on-board parts and defaults are unknown, so they are not checked. Fix: use canonical GPIO names, or add chipdata/boards/esp32-s3-devkitc-1.yaml.
+examples/hw/s3-minimal.yaml: warnings (0 errors, 1 warnings, 0 info, 0 acknowledged)

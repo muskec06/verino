@@ -1,0 +1,4 @@
+W-REF-002 examples/hw/esp32-weather.yaml:4:8 board: no board data for 'esp32-devkitc'. Board aliases, on-board parts and defaults are unknown, so they are not checked. Fix: use canonical GPIO names, or add chipdata/boards/esp32-devkitc.yaml.
+E-REF-001 examples/hw/esp32-weather.yaml:5:9 module: no chip data for module 'esp32-wroom-32'. Pin, memory and boot rules need the module and chip data; none of them can run. Fix: use a supported module (esp32-s3-wroom-1-n16r8, esp32-s3-wroom-1-n8r8) or add chipdata/modules/esp32-wroom-32.yaml.
+I-ACK-001 examples/hw/esp32-weather.yaml:21:5 ack[0]: acknowledgement of W-BOOT-010 for GPIO27 matches no finding. A stale acknowledgement hides nothing today but may hide a real problem later. Fix: remove it, or correct the rule ID, pin or device.
+examples/hw/esp32-weather.yaml: error (1 errors, 1 warnings, 1 info, 0 acknowledged)

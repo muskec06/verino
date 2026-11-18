@@ -1,0 +1,4 @@
+W-REF-002 examples/hw/s3-greenhouse.yaml:5:8 board: no board data for 'esp32-s3-devkitc-1'. Board aliases, on-board parts and defaults are unknown, so they are not checked. Fix: use canonical GPIO names, or add chipdata/boards/esp32-s3-devkitc-1.yaml.
+E-PIN-004 examples/hw/s3-greenhouse.yaml:39:31 devices.status.pin: cannot resolve board alias 'LED_RGB': there is no board data for 'esp32-s3-devkitc-1'. Without the GPIO number no pin rule can check this connection. Fix: write the GPIO name (e.g. GPIO38) or set a board with board data.
+E-VOLT-001 examples/hw/s3-greenhouse.yaml:41:57 devices.tank.echo: hc-sr04 echo drives 5 V or more into GPIO16 (community source). esp32s3 pins accept at most 3.6 V; a direct connection can damage it. Fix: add a voltage divider or a level shifter, or use a 3.3 V part.
+examples/hw/s3-greenhouse.yaml: error (2 errors, 1 warnings, 0 info, 0 acknowledged)

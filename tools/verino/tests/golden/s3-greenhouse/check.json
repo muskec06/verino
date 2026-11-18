@@ -1,0 +1,59 @@
+{
+  "schema": "verino-report/1",
+  "file": "examples/hw/s3-greenhouse.yaml",
+  "status": "error",
+  "exit_code": 2,
+  "counts": {
+    "errors": 2,
+    "warnings": 1,
+    "info": 0,
+    "acknowledged": 0
+  },
+  "findings": [
+    {
+      "id": "W-REF-002",
+      "severity": "warning",
+      "file": "examples/hw/s3-greenhouse.yaml",
+      "line": 5,
+      "col": 8,
+      "path": "board",
+      "message": "no board data for 'esp32-s3-devkitc-1'",
+      "why": "Board aliases, on-board parts and defaults are unknown, so they are not checked.",
+      "fix": "use canonical GPIO names, or add chipdata/boards/esp32-s3-devkitc-1.yaml.",
+      "pin": null,
+      "device": null,
+      "acknowledged": false,
+      "ack_reason": null
+    },
+    {
+      "id": "E-PIN-004",
+      "severity": "error",
+      "file": "examples/hw/s3-greenhouse.yaml",
+      "line": 39,
+      "col": 31,
+      "path": "devices.status.pin",
+      "message": "cannot resolve board alias 'LED_RGB': there is no board data for 'esp32-s3-devkitc-1'",
+      "why": "Without the GPIO number no pin rule can check this connection.",
+      "fix": "write the GPIO name (e.g. GPIO38) or set a board with board data.",
+      "pin": "LED_RGB",
+      "device": "status",
+      "acknowledged": false,
+      "ack_reason": null
+    },
+    {
+      "id": "E-VOLT-001",
+      "severity": "error",
+      "file": "examples/hw/s3-greenhouse.yaml",
+      "line": 41,
+      "col": 57,
+      "path": "devices.tank.echo",
+      "message": "hc-sr04 echo drives 5 V or more into GPIO16 (community source)",
+      "why": "esp32s3 pins accept at most 3.6 V; a direct connection can damage it.",
+      "fix": "add a voltage divider or a level shifter, or use a 3.3 V part.",
+      "pin": "GPIO16",
+      "device": "tank",
+      "acknowledged": false,
+      "ack_reason": null
+    }
+  ]
+}

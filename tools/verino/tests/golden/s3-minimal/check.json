@@ -1,0 +1,29 @@
+{
+  "schema": "verino-report/1",
+  "file": "examples/hw/s3-minimal.yaml",
+  "status": "warnings",
+  "exit_code": 1,
+  "counts": {
+    "errors": 0,
+    "warnings": 1,
+    "info": 0,
+    "acknowledged": 0
+  },
+  "findings": [
+    {
+      "id": "W-REF-002",
+      "severity": "warning",
+      "file": "examples/hw/s3-minimal.yaml",
+      "line": 3,
+      "col": 8,
+      "path": "board",
+      "message": "no board data for 'esp32-s3-devkitc-1'",
+      "why": "Board aliases, on-board parts and defaults are unknown, so they are not checked.",
+      "fix": "use canonical GPIO names, or add chipdata/boards/esp32-s3-devkitc-1.yaml.",
+      "pin": null,
+      "device": null,
+      "acknowledged": false,
+      "ack_reason": null
+    }
+  ]
+}
