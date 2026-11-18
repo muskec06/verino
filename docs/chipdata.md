@@ -7,6 +7,8 @@ chipdata/
   sources.yaml          # documents and source trees cited by the data
   chips/<chip>.yaml     # verino-chip/1
   modules/<module>.yaml # verino-module/1
+  parts/<part>.yaml     # verino-part/1
+  rules/rules.yaml      # verino-rules/1 (see rules.md)
 ```
 
 ## Rules
@@ -51,6 +53,26 @@ manual:
   exposed_gpios: {pins: [...], provenance}       # GPIOs that reach module pads
   internal_pins: {pins: {GPIOn: use}, note, provenance}   # pads used inside the module
 ```
+
+## Part files
+
+Minimal device manifests used by the boot and voltage rules (Phase 0).
+
+```yaml
+schema: verino-part/1
+part: grove-relay
+title: Seeed Studio Grove - Relay v1.2
+manual:
+  interface: {kinds: [gpio], provenance}
+  supply: {min_volts, max_volts, provenance}                # optional
+  pins: {roles: {pin: {direction: input|output|open_drain, level?: supply|pullup}}, provenance}
+  reset_imposes: {roles: {pin: pulled_high|pulled_low|none}, note?, provenance}   # level at power-up
+  actuator: {value: true, safe_boot_level: low|high, note?, provenance}
+```
+
+- Role names match the device keys in `hardware.yaml` (`pin`, `trig`, `echo`, ...).
+- `reset_imposes` includes parts the datasheet requires (e.g. the DS18B20 pull-up on DQ).
+- Parts without a manufacturer datasheet use `kind: community` (HC-SR04).
 
 ## Regenerating `soc_caps`
 

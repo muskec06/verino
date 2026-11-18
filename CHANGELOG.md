@@ -13,3 +13,4 @@ All notable changes to this project are documented here. The format follows [Kee
 - Diagnostics `E-YAML-001` and `E-SCHEMA-001`.
 - ESP32-S3 chip data (`chipdata/chips/esp32s3.yaml`), ESP32-S3-WROOM-1 N8R8/N16R8 module data, source registry and `schemas/chipdata.schema.json`; `verino.chipdata.extract_soc_caps` reads ESP-IDF v6 headers; reference `docs/chipdata.md`.
 - Rule engine (`verino.rules.check`), rule catalog `chipdata/rules/rules.yaml` with trigger/clean fixtures, Level 1 rules for ESP32-S3 and acknowledgements; `uses` field in `hardware.yaml`; typed chip data access (`verino.chipdata.db`); chip data ships in the wheel.
+- Part manifests (`chipdata/parts/`: bme280, ds18b20, ws2812, hc-sr04, grove-relay) and Level 2 rules: strapping (`W-STRAP-001`, `E-STRAP-002`, `W-STRAP-003`, `I-STRAP-004`), actuator boot safety (`W-BOOT-010`) and IO voltage (`E-VOLT-001`).
