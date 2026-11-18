@@ -1,0 +1,113 @@
+# Rule catalog. IDs are stable: never reuse or redefine a published ID.
+# E- error, W- warning, I- info. Every rule has fixtures/<ID>/{trigger,clean}.yaml.
+# facts: the chip/module data a rule reads; each fact carries its own provenance.
+schema: verino-rules/1
+rules:
+  E-YAML-001:
+    severity: error
+    name: yaml-syntax
+    summary: The file is not valid YAML (including duplicate keys).
+    level: 0
+    phase: '0'
+  E-SCHEMA-001:
+    severity: error
+    name: schema
+    summary: The file does not match verino-hw/1 or refers to an undefined bus or device.
+    level: 0
+    phase: '0'
+  E-REF-001:
+    severity: error
+    name: unknown-module
+    summary: No chip data exists for the module (or its chip), so no hardware rule can run.
+    level: 1
+    phase: '0'
+    facts: [modules/<module>.yaml, chips/<chip>.yaml]
+  W-REF-002:
+    severity: warning
+    name: unknown-board
+    summary: No board data exists for the board; board aliases cannot be resolved.
+    level: 1
+    phase: '0'
+    facts: [boards/<board>.yaml]
+  E-PIN-001:
+    severity: error
+    name: pin-exists
+    summary: The pin does not exist on the chip.
+    level: 1
+    phase: '0'
+    facts: [chips.soc_caps.gpio.valid]
+  E-PIN-002:
+    severity: error
+    name: pin-exposed
+    summary: The pin exists on the chip but is not brought out by the module.
+    level: 1
+    phase: '0'
+    facts: [modules.manual.exposed_gpios]
+  E-PIN-003:
+    severity: error
+    name: pin-conflict
+    summary: The same pin is assigned more than once.
+    level: 1
+    phase: '0'
+  E-PIN-004:
+    severity: error
+    name: pin-alias
+    summary: A board alias cannot be resolved to a GPIO.
+    level: 1
+    phase: '0'
+    facts: [boards/<board>.yaml]
+  E-RSV-001:
+    severity: error
+    name: reserved-memory-pin
+    summary: The pin is used by flash or PSRAM (chip SPI0/1 pins or module-internal pins).
+    level: 1
+    phase: '0'
+    facts: [chips.manual.spi_flash_pins, modules.manual.internal_pins]
+  E-RSV-002:
+    severity: error
+    name: reserved-usb-pin
+    summary: The pin is a USB D-/D+ pin connected to the USB Serial/JTAG controller by default.
+    level: 1
+    phase: '0'
+    facts: [chips.manual.usb_pins]
+  W-RSV-003:
+    severity: warning
+    name: uart0-console-pin
+    summary: The pin belongs to UART0, the default console and download interface.
+    level: 1
+    phase: '0'
+    facts: [chips.manual.uart0_pins]
+  W-RSV-004:
+    severity: warning
+    name: jtag-pin
+    summary: The pin belongs to the JTAG interface.
+    level: 1
+    phase: '0'
+    facts: [chips.manual.jtag_pins]
+  E-ADC-001:
+    severity: error
+    name: adc-channel
+    summary: An analog input is assigned to a pin without an ADC channel.
+    level: 1
+    phase: '0'
+    facts: [chips.soc_caps.adc]
+  W-ADC-003:
+    severity: warning
+    name: adc2-wifi-shared
+    summary: An ADC2 pin is used while Wi-Fi is on; on this chip ADC2 is shared with Wi-Fi and reads may fail.
+    level: 1
+    phase: '0'
+    facts: [chips.soc_caps.adc, chips.manual.adc2_wifi]
+  E-PERIPH-001:
+    severity: error
+    name: peripheral-count
+    summary: More I2C, UART or SPI buses or PWM outputs than the chip provides, or a non-general-purpose SPI host.
+    level: 1
+    phase: '0'
+    facts: [chips.soc_caps.macros, chips.manual.spi_hosts]
+  I-ACK-001:
+    severity: info
+    name: unused-ack
+    summary: An acknowledgement matches no finding.
+    level: 0
+    phase: '0'

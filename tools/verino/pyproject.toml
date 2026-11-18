@@ -54,6 +54,7 @@ packages = ["src/verino"]
 # The canonical schema lives at the repository root (schemas/); ship a copy in the wheel.
 [tool.hatch.build.targets.wheel.force-include]
 "../../schemas/verino-hw-1.schema.json" = "verino/schemas/verino-hw-1.schema.json"
+"../../chipdata" = "verino/data/chipdata"
 
 [tool.pytest.ini_options]
 testpaths = ["tests"]
