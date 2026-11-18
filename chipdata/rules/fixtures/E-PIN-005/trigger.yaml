@@ -1,0 +1,14 @@
+# E-PIN-005: must trigger on the marked lines (pins left for the solver).
+schema: verino-hw/1
+module: esp32-s3-wroom-1-n8r8
+uses: []
+
+buses:
+  i2c0:
+    kind: i2c
+    sda: auto  # <- E-PIN-005
+    scl: auto  # <- E-PIN-005
+
+devices:
+  env: {part: bme280, bus: i2c0, addr: 0x76}
+  probe: {part: ds18b20, kind: onewire, pin: auto}  # <- E-PIN-005

@@ -78,10 +78,22 @@
         "locked": { "type": "boolean" }
       }
     },
+    "auto_pin": {
+      "description": "Pin to be chosen by `verino pins solve` (change note 0006).",
+      "const": "auto"
+    },
+    "bus_pin": {
+      "description": "Bus pin: a full assignment, or auto.",
+      "oneOf": [
+        { "$ref": "#/$defs/pin_assignment" },
+        { "$ref": "#/$defs/auto_pin" }
+      ]
+    },
     "pin_ref": {
-      "description": "Device pin: shorthand pin name (origin: user) or a full assignment. See docs/changes/0001.",
+      "description": "Device pin: shorthand pin name (origin: user), a full assignment, or auto. See docs/changes/0001 and 0006.",
       "oneOf": [
         { "$ref": "#/$defs/pin_name" },
+        { "$ref": "#/$defs/auto_pin" },
         { "$ref": "#/$defs/pin_assignment" }
       ]
     },
@@ -177,8 +189,8 @@
       "required": ["kind", "sda", "scl"],
       "properties": {
         "kind": { "const": "i2c" },
-        "sda": { "$ref": "#/$defs/pin_assignment" },
-        "scl": { "$ref": "#/$defs/pin_assignment" },
+        "sda": { "$ref": "#/$defs/bus_pin" },
+        "scl": { "$ref": "#/$defs/bus_pin" },
         "freq_hz": { "$ref": "#/$defs/positive_int" },
         "pullups": {
           "type": "string",
@@ -193,9 +205,9 @@
       "properties": {
         "kind": { "const": "spi" },
         "host": { "type": "string", "pattern": "^SPI[0-9]$" },
-        "sclk": { "$ref": "#/$defs/pin_assignment" },
-        "mosi": { "$ref": "#/$defs/pin_assignment" },
-        "miso": { "$ref": "#/$defs/pin_assignment" }
+        "sclk": { "$ref": "#/$defs/bus_pin" },
+        "mosi": { "$ref": "#/$defs/bus_pin" },
+        "miso": { "$ref": "#/$defs/bus_pin" }
       }
     },
     "uart_bus": {
@@ -205,10 +217,10 @@
       "anyOf": [{ "required": ["tx"] }, { "required": ["rx"] }],
       "properties": {
         "kind": { "const": "uart" },
-        "tx": { "$ref": "#/$defs/pin_assignment" },
-        "rx": { "$ref": "#/$defs/pin_assignment" },
-        "rts": { "$ref": "#/$defs/pin_assignment" },
-        "cts": { "$ref": "#/$defs/pin_assignment" },
+        "tx": { "$ref": "#/$defs/bus_pin" },
+        "rx": { "$ref": "#/$defs/bus_pin" },
+        "rts": { "$ref": "#/$defs/bus_pin" },
+        "cts": { "$ref": "#/$defs/bus_pin" },
         "baud": { "$ref": "#/$defs/positive_int" }
       }
     },

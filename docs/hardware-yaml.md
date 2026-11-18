@@ -43,6 +43,8 @@ sda: {pin: GPIO8, origin: board_default, locked: false}
 
 Bus pins always use the full assignment. Device pins may also use the **shorthand** `pin: GPIO4`, which means `{pin: GPIO4, origin: user, locked: false}` (change note [0001](changes/0001-device-pin-shorthand.md)).
 
+Any pin (bus or device) may be `auto`: `sda: auto`, `cs: auto`, `pin: auto`. `verino pins solve --write` replaces it with `{pin: GPIOn, origin: solver}`. Until then `check` reports `E-PIN-005` and `render` refuses the file (change note [0006](changes/0006-auto-pins-and-solver.md)).
+
 ## `memory`
 
 ```yaml

@@ -25,6 +25,10 @@ A matching finding is still reported, marked `[acknowledged: <reason>]`, and doe
 | `warnings` | at least one active warning | 1 |
 | `error` | at least one active error | 2 |
 
+## Unsolved pins
+
+`E-PIN-005` reports every pin still set to `auto`. Other rules skip those slots; `verino pins solve` fills them ([CLI](cli.md#verino-pins-solve)).
+
 ## Memory rules
 
 `E-MEM-001` (partitions fit in flash), `E-MEM-002` (OTA layout complete) and `E-MEM-003` (flash/PSRAM match the module) read `memory` in `hardware.yaml`, the module's memory data and the ESP-IDF partition facts in `chipdata/idf/partitions.yaml`. `W-VAL-001` reports a `validation` block whose checksum no longer matches the file.
