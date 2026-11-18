@@ -1,0 +1,10 @@
+# E-SCHEMA-001: must trigger on the marked line.
+schema: verino-hw/1
+module: esp32-s3-wroom-1-n8r8
+uses: []
+
+buses:
+  i2c0:
+    kind: i2c
+    sda: {pin: GPIO8}  # <- E-SCHEMA-001
+    scl: {pin: GPIO9, origin: user}

@@ -17,6 +17,12 @@
     "module": { "$ref": "#/$defs/identifier" },
     "chip_rev": { "type": "string", "pattern": "^v[0-9]+\\.[0-9]+$" },
     "hw_rev": { "$ref": "#/$defs/revision" },
+    "uses": {
+      "description": "On-chip resources the firmware uses. Missing means [wifi]. See docs/changes/0003.",
+      "type": "array",
+      "uniqueItems": true,
+      "items": { "enum": ["wifi", "ble", "deep_sleep"] }
+    },
     "memory": { "$ref": "#/$defs/memory" },
     "buses": {
       "type": "object",

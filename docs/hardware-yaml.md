@@ -15,6 +15,7 @@ The schema only checks structure. Whether a pin exists, is free or is safe at bo
 | `module` | yes | user | Module id, e.g. `esp32-s3-wroom-1-n16r8` (flash, PSRAM, internal pins) |
 | `chip_rev` | no | user | Chip revision `vX.Y`, used by errata rules |
 | `hw_rev` | no | user | Your own circuit revision |
+| `uses` | no | user | On-chip resources the firmware uses: `wifi`, `ble`, `deep_sleep`. Missing means `[wifi]`; write `uses: []` if none (change note [0003](changes/0003-hardware-uses-field.md)) |
 | `memory` | no | user | Flash, PSRAM, CPU frequency, partitions |
 | `buses` | no | user / solver | Bus instances by name |
 | `devices` | no | user / solver | Connected parts by name |
@@ -125,3 +126,5 @@ E-SCHEMA-001 hardware.yaml:8:10 buses.i2c0.sda: missing required field 'origin'.
 | --- | --- |
 | `E-YAML-001` | The file is not valid YAML (including duplicate keys) |
 | `E-SCHEMA-001` | The file does not match `verino-hw/1`, or refers to an undefined bus or device |
+
+Hardware rules are listed in [rules.md](rules.md).

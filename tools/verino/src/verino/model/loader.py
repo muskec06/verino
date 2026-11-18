@@ -26,6 +26,7 @@ from verino.model.types import (
     PinAssignment,
     PsramConfig,
     Reserved,
+    Use,
     Validation,
     ValidationStatus,
 )
@@ -160,6 +161,7 @@ class _Builder:
             board_rev=_opt_str(d.get("board_rev")),
             chip_rev=_opt_str(d.get("chip_rev")),
             hw_rev=_opt_str(d.get("hw_rev")),
+            uses=tuple(cast(Use, str(u)) for u in d["uses"]) if "uses" in d else None,
             memory=self.memory(d["memory"]) if "memory" in d else None,
             buses={str(k): self.bus(str(k), v) for k, v in (d.get("buses") or {}).items()},
             devices={str(k): self.device(str(k), v) for k, v in (d.get("devices") or {}).items()},

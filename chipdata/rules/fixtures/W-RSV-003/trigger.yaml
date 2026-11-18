@@ -1,0 +1,7 @@
+# W-RSV-003: must trigger on the marked line.
+schema: verino-hw/1
+module: esp32-s3-wroom-1-n8r8
+uses: []
+
+devices:
+  out: {part: relay-module, kind: gpio, pin: GPIO43}  # <- W-RSV-003

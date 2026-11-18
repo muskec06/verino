@@ -109,6 +109,7 @@ If the gate is not met, do not start Phase 1; re-evaluate scope.
 
 - 2026-11-18: `hardware.yaml` `source: {kind: cubemx, ...}` and `source: devicetree`; T2 schema accepts only `native` (Phase 3 / deferred).
 - 2026-11-18: Octal flash mode (`opi`) in `memory.flash.mode` for modules with octal flash; not needed by Phase 0 modules (Phase 0b).
+- 2026-11-18: Peripheral-count rules for RMT and PCNT need part manifests that declare which peripheral a device uses (Phase 1).
 
 ---
 

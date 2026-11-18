@@ -16,7 +16,12 @@ from verino.model.yamlio import load_text
 CHIPDATA = REPO_ROOT / "chipdata"
 SCHEMA = json.loads((REPO_ROOT / "schemas" / "chipdata.schema.json").read_text(encoding="utf-8"))
 DATA_FILES = sorted(
-    [CHIPDATA / "sources.yaml", *CHIPDATA.glob("chips/*.yaml"), *CHIPDATA.glob("modules/*.yaml")]
+    [
+        CHIPDATA / "sources.yaml",
+        CHIPDATA / "rules" / "rules.yaml",
+        *CHIPDATA.glob("chips/*.yaml"),
+        *CHIPDATA.glob("modules/*.yaml"),
+    ]
 )
 CHIP_FILES = sorted(CHIPDATA.glob("chips/*.yaml"))
 MODULE_FILES = sorted(CHIPDATA.glob("modules/*.yaml"))

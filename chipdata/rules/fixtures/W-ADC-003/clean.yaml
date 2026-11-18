@@ -1,0 +1,7 @@
+# W-ADC-003: must not trigger.
+schema: verino-hw/1
+module: esp32-s3-wroom-1-n8r8
+uses: []
+
+devices:
+  soil: {part: analog-in, kind: adc, pin: GPIO11}

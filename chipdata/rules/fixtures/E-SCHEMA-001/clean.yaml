@@ -1,0 +1,10 @@
+# E-SCHEMA-001: must not trigger.
+schema: verino-hw/1
+module: esp32-s3-wroom-1-n8r8
+uses: []
+
+buses:
+  i2c0:
+    kind: i2c
+    sda: {pin: GPIO8, origin: user}
+    scl: {pin: GPIO9, origin: user}
