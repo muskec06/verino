@@ -62,3 +62,31 @@ Writes the tool-owned blocks into the file and reports on the written file:
 User fields, comments and key order are kept. Running `--write` twice gives the same file. A file with YAML or schema errors, or with an unknown module, is not written; the reason goes to stderr.
 
 When the file changes after `--write`, `check` reports `W-VAL-001` until `--write` runs again.
+
+## `verino pins render`
+
+```bash
+verino pins render hardware.yaml              # writes next to hardware.yaml
+verino pins render hardware.yaml -o <project> # writes into <project>/gen/
+verino pins render hardware.yaml --json
+```
+
+Runs `check` first. When the check reports an active error nothing is written and the exit code is 2; otherwise the files below are (re)written and the exit code is 0. All outputs go under `gen/` so the tool never overwrites a user's own `sdkconfig.defaults` or `partitions.csv`.
+
+| File | Content |
+| --- | --- |
+| `gen/pins.hpp` | `constexpr int` constants in `namespace pins::<bus or device id>` (pin roles in upper case, plus `FREQ_HZ`, `BAUD`, `ADDR`). No includes; compiles in Arduino and ESP-IDF code. |
+| `gen/sdkconfig.defaults` | Flash mode/frequency/size, PSRAM mode/speed, CPU frequency and the custom partition table, as ESP-IDF `CONFIG_*` lines. Values come from `memory`, falling back to the module data. |
+| `gen/partitions.csv` | The partition table with explicit offsets (only when `memory.partitions` is set). |
+| `gen/pinout.md` | Pin table (GPIO, user, role, origin, locked), reserved pins and partitions. |
+
+Using the outputs in an ESP-IDF project rendered with `-o <project>`:
+
+```cmake
+# <project>/CMakeLists.txt, before include($ENV{IDF_PATH}/tools/cmake/project.cmake)
+set(SDKCONFIG_DEFAULTS "sdkconfig.defaults;gen/sdkconfig.defaults")
+```
+
+`CONFIG_PARTITION_TABLE_CUSTOM_FILENAME` points at `gen/partitions.csv`, relative to the project root. Add `gen/` to the include path of the component that uses `pins.hpp`.
+
+JSON output (`verino-render/1`): `file`, `written` (paths), `reason` (why nothing was written, or `null`) and the full check `report`.
