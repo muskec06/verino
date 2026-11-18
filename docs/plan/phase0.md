@@ -55,7 +55,7 @@ Rules: tasks run in order; one branch/PR per task; a task is ticked only when ev
 - [x] Memory checks: partitions fit in flash, two app partitions when OTA is selected, PSRAM mode matches the module.
 - [x] Golden-file tests (byte-identical output).
 
-Result (2026-11-18): `gen/pins.hpp` from `examples/hw/s3-datalogger.yaml` compiles with `xtensa-esp32-elf-g++ -std=gnu++17 -Wall -Werror` (PlatformIO toolchain) and host `g++ -std=c++17`. Build inside an ESP-IDF project on the maintainer's machine: pending.
+Result (2026-11-18): outputs of `examples/hw/s3-datalogger.yaml` build in an ESP-IDF v6.1.1 project (commit `051e4c4`, target esp32s3, Windows) whose `main.cpp` includes `gen/pins.hpp`, with `SDKCONFIG_DEFAULTS` set to `gen/sdkconfig.defaults`. All nine `CONFIG_*` lines took effect in the resulting `sdkconfig`; the partition table IDF generated from `gen/partitions.csv` matches the computed offsets (app0 at 0x20000). `pins.hpp` also compiles with host `g++ -std=c++17` and `xtensa-esp32-elf-g++`.
 
 **Done when:** `pins.hpp` generated from an example compiles in an ESP-IDF project (verified once on the user's machine; note the result here).
 
