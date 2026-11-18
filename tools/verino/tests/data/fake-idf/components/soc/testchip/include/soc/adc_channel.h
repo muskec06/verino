@@ -1,0 +1,7 @@
+#pragma once
+#define ADC1_GPIO1_CHANNEL      0
+#define ADC1_CHANNEL_0_GPIO_NUM 1
+#define ADC1_GPIO2_CHANNEL      1
+#define ADC1_CHANNEL_1_GPIO_NUM 2
+#define ADC2_GPIO5_CHANNEL      0
+#define ADC2_CHANNEL_0_GPIO_NUM 5
