@@ -56,6 +56,7 @@ class ChipData:
     spi_hosts: tuple[str, ...] = ()
     adc2_wifi: str | None = None
     io_input_max_volts: float | None = None
+    spi_iomux: dict[str, dict[str, str]] = field(default_factory=dict)  # host -> signal -> pin
 
     def pin(self, name: str) -> PinInfo | None:
         return self.pins.get(name)
@@ -198,6 +199,10 @@ def _chip_from_doc(doc: Any) -> ChipData:
         idf_source=str(caps["provenance"]["source"]),
         spi_hosts=tuple(str(h) for h in (manual.get("spi_hosts") or {}).get("general_purpose", [])),
         adc2_wifi=str(adc2["behavior"]) if adc2 else None,
+        spi_iomux={
+            str(host): {str(s): str(p) for s, p in signals.items()}
+            for host, signals in (caps.get("spi_iomux") or {}).items()
+        },
         io_input_max_volts=(
             float(manual["io_voltage"]["input_max_volts"]) if "io_voltage" in manual else None
         ),

@@ -29,6 +29,8 @@ VERSION_HEADER = "components/esp_common/include/esp_idf_version.h"
 
 _ADC = re.compile(r"^ADC(\d)_GPIO(\d+)_CHANNEL$")
 _RTCIO = re.compile(r"^RTCIO_GPIO(\d+)_CHANNEL$")
+# Quad-mode IO_MUX pins of general-purpose SPI hosts (octal variants end in _OCT).
+_SPI_IOMUX = re.compile(r"^(SPI[0-9])_IOMUX_PIN_NUM_([A-Z0-9]+)$")
 
 # Raw counts exported for the rules, in output order. ESP-IDF v6 layout.
 _MACROS = (
@@ -68,12 +70,13 @@ class ChipConfig:
     caps_headers: tuple[str, ...]
     adc_header: str
     rtc_io_header: str
+    spi_pins_header: str
     fixed_pins: tuple[tuple[str, str], ...] = _FIXED_PINS
     macros: tuple[str, ...] = _MACROS
 
     @property
     def headers(self) -> tuple[str, ...]:
-        return (*self.caps_headers, self.adc_header, self.rtc_io_header)
+        return (*self.caps_headers, self.adc_header, self.rtc_io_header, self.spi_pins_header)
 
 
 def chip_config(chip: str) -> ChipConfig:
@@ -90,6 +93,7 @@ def chip_config(chip: str) -> ChipConfig:
         ),
         adc_header=f"{soc}/adc_channel.h",
         rtc_io_header=f"{soc}/rtc_io_channel.h",
+        spi_pins_header=f"components/esp_hal_gpspi/{chip}/include/soc/spi_pins.h",
     )
 
 
@@ -164,6 +168,7 @@ def extract(idf: Path, config: ChipConfig) -> CommentedMap:
         caps.update(_read(idf, rel))
     adc_defs = _read(idf, config.adc_header)
     rtc_defs = _read(idf, config.rtc_io_header)
+    spi_defs = _read(idf, config.spi_pins_header)
 
     count = _value("SOC_GPIO_PIN_COUNT", caps)
     adc: dict[str, dict[int, int]] = {}
@@ -200,6 +205,15 @@ def extract(idf: Path, config: ChipConfig) -> CommentedMap:
         for unit in sorted(adc)
     )
     block["rtc_io"] = _flow_map({f"GPIO{g}": ch for g, ch in sorted(rtc.items())})
+    spi_iomux: dict[str, dict[str, str]] = {}
+    for name in spi_defs:
+        match = _SPI_IOMUX.match(name)
+        if match:
+            host, signal = match.groups()
+            spi_iomux.setdefault(host, {})[signal.lower()] = f"GPIO{_value(name, spi_defs)}"
+    block["spi_iomux"] = CommentedMap(
+        (host, _flow_map(dict(sorted(spi_iomux[host].items())))) for host in sorted(spi_iomux)
+    )
     block["fixed_pins"] = _flow_map(
         {key: f"GPIO{_value(macro, caps)}" for key, macro in config.fixed_pins}
     )

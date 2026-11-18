@@ -93,7 +93,7 @@ The extractor replaces only `generated`; `VERINO_IDF_PATH=<esp-idf> pytest tests
 
 ## Regenerating `soc_caps`
 
-Requires an ESP-IDF v6 source tree with `components/soc`, `components/esp_hal_pcnt`, `components/esp_hal_rmt` and `components/esp_common/include`:
+Requires an ESP-IDF v6 source tree with `components/soc`, `components/esp_hal_pcnt`, `components/esp_hal_rmt`, `components/esp_hal_gpspi` (SPI IO_MUX pins, `soc_caps.spi_iomux`) and `components/esp_common/include`:
 
 ```bash
 cd tools/verino
