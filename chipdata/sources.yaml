@@ -1,6 +1,7 @@
 # Documents and source trees cited by chip and module data (provenance.source).
 # PDFs are not stored in the repository; sha256 identifies the exact file that was read.
 schema: verino-sources/1
+version: '2026.11'
 sources:
   esp-idf@v6.1.1:
     kind: soc_caps

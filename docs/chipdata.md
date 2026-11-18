@@ -74,6 +74,23 @@ manual:
 - `reset_imposes` includes parts the datasheet requires (e.g. the DS18B20 pull-up on DQ).
 - Parts without a manufacturer datasheet use `kind: community` (HC-SR04).
 
+## ESP-IDF partition data
+
+`chipdata/idf/partitions.yaml` (schema `verino-partitions/1`, change note 0005) holds ESP-IDF facts that are not chip facts:
+
+- `generated.presets`: the built-in tables `singleapp`, `singleapp_large`, `two_ota`, `two_ota_large`, copied from `components/partition_table/*.csv`.
+- `manual.table`: partition table offset and size, sector size and app alignment (IDF `partition-tables.rst`).
+- `manual.ota`: partitions OTA needs (IDF `ota.rst`).
+
+```bash
+cd tools/verino
+python -m verino.chipdata.extract_partitions --idf <esp-idf> --out ../../chipdata/idf/partitions.yaml
+```
+
+The extractor replaces only `generated`; `VERINO_IDF_PATH=<esp-idf> pytest tests/test_chipdata.py` checks it against the tree. The ESP-IDF tree also needs `components/partition_table`.
+
+`chipdata/sources.yaml` carries the chip data `version` (e.g. `2026.11`) written into `validation.chipdata`. Bump it when chip, module, part or IDF data changes.
+
 ## Regenerating `soc_caps`
 
 Requires an ESP-IDF v6 source tree with `components/soc`, `components/esp_hal_pcnt`, `components/esp_hal_rmt` and `components/esp_common/include`:

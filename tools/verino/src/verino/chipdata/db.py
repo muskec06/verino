@@ -1,4 +1,4 @@
-"""Typed, read-only access to ``chipdata/`` (chips, modules, boards).
+"""Typed, read-only access to ``chipdata/`` (chips, modules, parts, boards, ESP-IDF facts).
 
 Chip files keep generated (``soc_caps``) and hand-written (``manual``) facts apart
 (change note 0002); :class:`ChipData` merges them into a per-pin view for the rules.
@@ -69,6 +69,33 @@ class ModuleData:
     exposed: frozenset[str]
     internal: dict[str, str]
     vdd_spi_volts: float | str | None = None
+    flash_size: str | None = None
+    flash_interface: str | None = None
+    flash_max_freq_mhz: int | None = None
+    psram_size: str | None = None
+    psram_interface: str | None = None
+
+
+@dataclass(frozen=True)
+class PresetPartition:
+    name: str
+    type: str
+    subtype: str
+    size: str
+
+
+@dataclass(frozen=True)
+class PartitionData:
+    """ESP-IDF partition table facts (``chipdata/idf/partitions.yaml``)."""
+
+    table_offset: int
+    table_size: int
+    sector_size: int
+    app_align: int
+    ota_app_subtypes: tuple[str, ...]
+    ota_data_subtype: str
+    presets: dict[str, tuple[PresetPartition, ...]]
+    idf_source: str
 
 
 @dataclass(frozen=True)
@@ -177,9 +204,33 @@ def _chip_from_doc(doc: Any) -> ChipData:
     )
 
 
+def _partitions_from_doc(doc: Any) -> PartitionData:
+    table = doc["manual"]["table"]
+    ota = doc["manual"]["ota"]
+    generated = doc["generated"]
+    return PartitionData(
+        table_offset=int(table["offset"]),
+        table_size=int(table["size"]),
+        sector_size=int(table["sector_size"]),
+        app_align=int(table["app_align"]),
+        ota_app_subtypes=tuple(str(s) for s in ota["app_subtypes"]),
+        ota_data_subtype=str(ota["data_subtype"]),
+        presets={
+            str(name): tuple(
+                PresetPartition(str(p["name"]), str(p["type"]), str(p["subtype"]), str(p["size"]))
+                for p in preset["partitions"]
+            )
+            for name, preset in generated["presets"].items()
+        },
+        idf_source=str(generated["provenance"]["source"]),
+    )
+
+
 def _module_from_doc(doc: Any) -> ModuleData:
     manual = doc["manual"]
     vdd = manual["memory"].get("vdd_spi_volts")
+    flash = manual["memory"]["flash"]
+    psram = manual["memory"].get("psram") or {}
     return ModuleData(
         module=str(doc["module"]),
         chip=str(doc["chip"]),
@@ -190,6 +241,11 @@ def _module_from_doc(doc: Any) -> ModuleData:
             for p, u in ((manual.get("internal_pins") or {}).get("pins") or {}).items()
         },
         vdd_spi_volts=vdd if isinstance(vdd, (int, float, str)) else None,
+        flash_size=str(flash["size"]),
+        flash_interface=str(flash["interface"]),
+        flash_max_freq_mhz=int(flash["max_freq_mhz"]) if "max_freq_mhz" in flash else None,
+        psram_size=str(psram["size"]) if "size" in psram else None,
+        psram_interface=str(psram["interface"]) if "interface" in psram else None,
     )
 
 
@@ -231,6 +287,21 @@ class ChipDB:
     def part(self, part: str) -> PartData | None:
         doc = self._doc("parts", f"{part}.yaml")
         return _part_from_doc(doc) if doc is not None else None
+
+    @functools.cache  # noqa: B019
+    def partitions(self) -> PartitionData:
+        doc = self._doc("idf", "partitions.yaml")
+        if doc is None:
+            raise FileNotFoundError(self.root / "idf" / "partitions.yaml")
+        return _partitions_from_doc(doc)
+
+    @functools.cache  # noqa: B019
+    def version(self) -> str:
+        """Chip data release (``sources.yaml`` ``version``), e.g. ``2026.11``."""
+        doc = self._doc("sources.yaml")
+        if doc is None:
+            raise FileNotFoundError(self.root / "sources.yaml")
+        return str(doc["version"])
 
     def has_board(self, board: str) -> bool:
         return (self.root / "boards" / f"{board}.yaml").is_file()

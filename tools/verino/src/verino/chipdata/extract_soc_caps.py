@@ -142,12 +142,22 @@ def _commit(idf: Path) -> str | None:
     return None
 
 
+def idf_version(idf: Path) -> str:
+    """ESP-IDF version of the tree at ``idf``, e.g. ``v6.1.1``."""
+    defs = _read(idf, VERSION_HEADER)
+    return "v{}.{}.{}".format(
+        *(_value(f"ESP_IDF_VERSION_{p}", defs) for p in ("MAJOR", "MINOR", "PATCH"))
+    )
+
+
+def idf_commit(idf: Path) -> str | None:
+    """Commit hash of the tree at ``idf`` when it is a git checkout."""
+    return _commit(idf)
+
+
 def extract(idf: Path, config: ChipConfig) -> CommentedMap:
     """Build the ``soc_caps`` block for ``config.chip`` from the tree at ``idf``."""
-    version_defs = _read(idf, VERSION_HEADER)
-    version = "v{}.{}.{}".format(
-        *(_value(f"ESP_IDF_VERSION_{p}", version_defs) for p in ("MAJOR", "MINOR", "PATCH"))
-    )
+    version = idf_version(idf)
 
     caps: dict[str, str] = {}
     for rel in config.caps_headers:

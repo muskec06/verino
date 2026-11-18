@@ -10,6 +10,7 @@ import pytest
 from conftest import REPO_ROOT
 from jsonschema import Draft202012Validator
 
+from verino.chipdata import extract_partitions
 from verino.chipdata.extract_soc_caps import CHIPS, extract
 from verino.model.yamlio import load_text
 
@@ -22,11 +23,13 @@ DATA_FILES = sorted(
         *CHIPDATA.glob("chips/*.yaml"),
         *CHIPDATA.glob("modules/*.yaml"),
         *CHIPDATA.glob("parts/*.yaml"),
+        *CHIPDATA.glob("idf/*.yaml"),
     ]
 )
 CHIP_FILES = sorted(CHIPDATA.glob("chips/*.yaml"))
 MODULE_FILES = sorted(CHIPDATA.glob("modules/*.yaml"))
 PART_FILES = sorted(CHIPDATA.glob("parts/*.yaml"))
+IDF_FILES = sorted(CHIPDATA.glob("idf/*.yaml"))
 TODO = "TODO(verify)"
 
 
@@ -71,7 +74,7 @@ def test_file_matches_schema(path: Path) -> None:
     assert errors == []
 
 
-@pytest.mark.parametrize("path", [*CHIP_FILES, *MODULE_FILES, *PART_FILES], ids=_rel)
+@pytest.mark.parametrize("path", [*CHIP_FILES, *MODULE_FILES, *PART_FILES, *IDF_FILES], ids=_rel)
 def test_every_manual_fact_has_provenance(path: Path) -> None:
     manual = _load(path).get("manual") or {}
     missing = []
@@ -84,7 +87,7 @@ def test_every_manual_fact_has_provenance(path: Path) -> None:
     assert missing == []
 
 
-@pytest.mark.parametrize("path", [*CHIP_FILES, *MODULE_FILES, *PART_FILES], ids=_rel)
+@pytest.mark.parametrize("path", [*CHIP_FILES, *MODULE_FILES, *PART_FILES, *IDF_FILES], ids=_rel)
 def test_provenance_sources_are_registered(path: Path) -> None:
     registered = set(_load(CHIPDATA / "sources.yaml")["sources"])
     cited = {
@@ -147,3 +150,18 @@ def test_soc_caps_block_matches_idf(path: Path) -> None:
     doc = _load(path)
     expected = extract(Path(os.environ["VERINO_IDF_PATH"]), CHIPS[str(doc["chip"])])
     assert json.loads(json.dumps(doc["soc_caps"])) == json.loads(json.dumps(expected))
+
+
+def test_hardware_schema_presets_match_partition_data() -> None:
+    hw = json.loads((REPO_ROOT / "schemas" / "verino-hw-1.schema.json").read_text(encoding="utf-8"))
+    preset = hw["$defs"]["memory"]["properties"]["partitions"]["properties"]["preset"]
+    data = _load(CHIPDATA / "idf" / "partitions.yaml")
+    assert preset["enum"] == list(data["generated"]["presets"])
+    assert list(data["generated"]["presets"]) == list(extract_partitions.PRESETS)
+
+
+@pytest.mark.skipif("VERINO_IDF_PATH" not in os.environ, reason="VERINO_IDF_PATH not set")
+def test_partition_presets_match_idf() -> None:
+    doc = _load(CHIPDATA / "idf" / "partitions.yaml")
+    expected = extract_partitions.extract(Path(os.environ["VERINO_IDF_PATH"]))
+    assert json.loads(json.dumps(doc["generated"])) == json.loads(json.dumps(expected))
