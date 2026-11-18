@@ -1,5 +1,6 @@
 """Command-line interface for Verino (``verino`` / ``vrn``)."""
 
+import json
 from pathlib import Path
 from typing import Annotated
 
@@ -7,7 +8,8 @@ import typer
 
 from verino import __version__
 from verino.model import load_hardware
-from verino.report import to_json, to_text, write_back
+from verino.render import render_file
+from verino.report import to_dict, to_json, to_text, write_back
 from verino.rules import check
 
 app = typer.Typer(
@@ -61,3 +63,46 @@ def pins_check(
         report = check(load_hardware(file))
     typer.echo(to_json(report) if as_json else to_text(report), nl=False)
     raise typer.Exit(report.exit_code)
+
+
+@pins_app.command("render")
+def pins_render(
+    file: Annotated[
+        Path,
+        typer.Argument(exists=True, dir_okay=False, readable=True, help="hardware.yaml to render."),
+    ],
+    out: Annotated[
+        Path | None,
+        typer.Option("-o", "--out", help="Output directory (default: the file's directory)."),
+    ] = None,
+    as_json: Annotated[bool, typer.Option("--json", help="Print the result as JSON.")] = False,
+) -> None:
+    """Write gen/pins.hpp, gen/sdkconfig.defaults, gen/partitions.csv and gen/pinout.md.
+
+    Nothing is written when the check reports errors (exit code 2).
+    """
+    root = out if out is not None else file.parent
+    result = render_file(file)
+    for rel, text in result.files.items():
+        target = root / rel
+        target.parent.mkdir(parents=True, exist_ok=True)
+        target.write_text(text, encoding="utf-8", newline="\n")
+    written = [(root / rel).as_posix() for rel in result.files]
+    code = 0 if result.files else 2
+    if as_json:
+        data = {
+            "schema": "verino-render/1",
+            "file": result.report.file,
+            "written": written,
+            "reason": result.reason or None,
+            "report": to_dict(result.report),
+        }
+        typer.echo(json.dumps(data, indent=2, ensure_ascii=False))
+    else:
+        if result.report.findings:
+            typer.echo(to_text(result.report), nl=False)
+        for path in written:
+            typer.echo(f"wrote {path}")
+        if not result.files:
+            typer.echo(f"{file.as_posix()}: not rendered: {result.reason}", err=True)
+    raise typer.Exit(code)

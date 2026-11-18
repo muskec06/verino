@@ -51,9 +51,11 @@ Rules: tasks run in order; one branch/PR per task; a task is ticked only when ev
 ## T5 — `verino pins check` and `verino pins render`
 
 - [x] `check`: human output + `--json`; exit code 0 clean, 1 warnings, 2 errors. `--write` fills `reserved` and `validation` and writes the checksum.
-- [ ] `render`: `gen/pins.hpp` (`constexpr` constants, compiles standalone in Arduino and ESP-IDF), `sdkconfig.defaults` fragment (flash, PSRAM, CPU), `partitions.csv`, `pinout.md`.
+- [x] `render`: `gen/pins.hpp` (`constexpr` constants, compiles standalone in Arduino and ESP-IDF), `sdkconfig.defaults` fragment (flash, PSRAM, CPU), `partitions.csv`, `pinout.md`.
 - [x] Memory checks: partitions fit in flash, two app partitions when OTA is selected, PSRAM mode matches the module.
-- [ ] Golden-file tests (byte-identical output).
+- [x] Golden-file tests (byte-identical output).
+
+Result (2026-11-18): `gen/pins.hpp` from `examples/hw/s3-datalogger.yaml` compiles with `xtensa-esp32-elf-g++ -std=gnu++17 -Wall -Werror` (PlatformIO toolchain) and host `g++ -std=c++17`. Build inside an ESP-IDF project on the maintainer's machine: pending.
 
 **Done when:** `pins.hpp` generated from an example compiles in an ESP-IDF project (verified once on the user's machine; note the result here).
 

@@ -1,0 +1,13 @@
+{
+  "schema": "verino-report/1",
+  "file": "examples/hw/s3-datalogger.yaml",
+  "status": "ok",
+  "exit_code": 0,
+  "counts": {
+    "errors": 0,
+    "warnings": 0,
+    "info": 0,
+    "acknowledged": 0
+  },
+  "findings": []
+}
