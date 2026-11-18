@@ -1,0 +1,303 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "$id": "https://verino.dev/schemas/chipdata.schema.json",
+  "title": "Verino chip, module and source data",
+  "description": "Files under chipdata/: chips (verino-chip/1), modules (verino-module/1) and the source registry (verino-sources/1). Reference: docs/chipdata.md.",
+  "type": "object",
+  "required": ["schema"],
+  "properties": {
+    "schema": { "enum": ["verino-chip/1", "verino-module/1", "verino-sources/1"] }
+  },
+  "allOf": [
+    {
+      "if": { "properties": { "schema": { "const": "verino-chip/1" } } },
+      "then": { "$ref": "#/$defs/chip_file" }
+    },
+    {
+      "if": { "properties": { "schema": { "const": "verino-module/1" } } },
+      "then": { "$ref": "#/$defs/module_file" }
+    },
+    {
+      "if": { "properties": { "schema": { "const": "verino-sources/1" } } },
+      "then": { "$ref": "#/$defs/sources_file" }
+    }
+  ],
+  "$defs": {
+    "todo": {
+      "description": "A value that could not be confirmed from a source. Must be listed under TODO(verify) in docs/plan/phase0.md.",
+      "const": "TODO(verify)"
+    },
+    "identifier": { "type": "string", "pattern": "^[a-z0-9][a-z0-9._-]*$" },
+    "source_id": { "type": "string", "pattern": "^[a-z0-9][a-z0-9._-]*@[A-Za-z0-9._-]+$" },
+    "gpio": { "type": "string", "pattern": "^GPIO(0|[1-9][0-9]?)$" },
+    "gpio_list": {
+      "type": "array",
+      "items": { "$ref": "#/$defs/gpio" },
+      "uniqueItems": true
+    },
+    "gpio_to_int": {
+      "type": "object",
+      "propertyNames": { "$ref": "#/$defs/gpio" },
+      "additionalProperties": { "type": "integer", "minimum": 0 }
+    },
+    "gpio_to_signal": {
+      "type": "object",
+      "minProperties": 1,
+      "propertyNames": { "$ref": "#/$defs/gpio" },
+      "additionalProperties": { "type": "string", "pattern": "^[A-Za-z0-9_+-]+$" }
+    },
+    "provenance": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": ["kind", "source", "ref"],
+      "properties": {
+        "kind": { "enum": ["soc_caps", "datasheet", "errata", "community", "measured"] },
+        "source": { "$ref": "#/$defs/source_id" },
+        "ref": {
+          "description": "Section, table and printed page, e.g. 'Table 3-1 (p. 32)'.",
+          "type": "string",
+          "minLength": 1
+        },
+        "note": { "type": "string", "minLength": 1 }
+      }
+    },
+    "pin_group": {
+      "description": "A named set of pins with their signal names, e.g. flash pins.",
+      "type": "object",
+      "additionalProperties": false,
+      "required": ["pins", "provenance"],
+      "properties": {
+        "pins": { "$ref": "#/$defs/gpio_to_signal" },
+        "note": { "type": "string", "minLength": 1 },
+        "provenance": { "$ref": "#/$defs/provenance" }
+      }
+    },
+    "strap": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": ["function", "default", "boot_safe", "on_violation", "severity", "provenance"],
+      "properties": {
+        "function": { "type": "string", "pattern": "^[a-z0-9_]+$" },
+        "default": {
+          "anyOf": [
+            { "enum": ["pull_up", "pull_down", "floating"] },
+            { "$ref": "#/$defs/todo" }
+          ]
+        },
+        "boot_safe": {
+          "anyOf": [{ "enum": ["high", "low", "any"] }, { "$ref": "#/$defs/todo" }]
+        },
+        "on_violation": { "type": "string", "minLength": 1 },
+        "severity": { "enum": ["error", "warning", "info"] },
+        "provenance": { "$ref": "#/$defs/provenance" }
+      }
+    },
+    "boot_pin": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": ["state", "pull"],
+      "properties": {
+        "state": {
+          "anyOf": [
+            { "enum": ["hi_z", "pulled_high", "pulled_low", "pulses"] },
+            { "$ref": "#/$defs/todo" }
+          ]
+        },
+        "pull": {
+          "anyOf": [
+            { "enum": ["up", "down", "none", "usb_pull_up"] },
+            { "$ref": "#/$defs/todo" }
+          ]
+        },
+        "glitches": {
+          "type": "array",
+          "minItems": 1,
+          "items": { "enum": ["low", "high", "pull_down", "pull_up"] }
+        },
+        "note": { "type": "string", "minLength": 1 }
+      }
+    },
+    "soc_caps_block": {
+      "description": "Written only by verino.chipdata.extract_soc_caps.",
+      "type": "object",
+      "additionalProperties": false,
+      "required": ["provenance", "gpio", "adc", "rtc_io", "fixed_pins", "macros"],
+      "properties": {
+        "provenance": {
+          "type": "object",
+          "additionalProperties": false,
+          "required": ["kind", "source", "idf_version", "files", "generated_by"],
+          "properties": {
+            "kind": { "const": "soc_caps" },
+            "source": { "$ref": "#/$defs/source_id" },
+            "idf_version": { "type": "string", "pattern": "^v[0-9]+\\.[0-9]+\\.[0-9]+$" },
+            "commit": { "type": "string", "pattern": "^[0-9a-f]{40}$" },
+            "files": {
+              "type": "array",
+              "minItems": 1,
+              "items": { "type": "string", "pattern": "^components/[A-Za-z0-9_./-]+$" }
+            },
+            "generated_by": { "const": "verino.chipdata.extract_soc_caps" }
+          }
+        },
+        "gpio": {
+          "type": "object",
+          "additionalProperties": false,
+          "required": ["count", "valid", "output"],
+          "properties": {
+            "count": { "type": "integer", "minimum": 1 },
+            "valid": { "$ref": "#/$defs/gpio_list" },
+            "output": { "$ref": "#/$defs/gpio_list" }
+          }
+        },
+        "adc": {
+          "type": "object",
+          "propertyNames": { "pattern": "^adc[0-9]$" },
+          "additionalProperties": { "$ref": "#/$defs/gpio_to_int" }
+        },
+        "rtc_io": { "$ref": "#/$defs/gpio_to_int" },
+        "fixed_pins": {
+          "type": "object",
+          "propertyNames": { "pattern": "^[a-z0-9_]+$" },
+          "additionalProperties": { "$ref": "#/$defs/gpio" }
+        },
+        "macros": {
+          "type": "object",
+          "propertyNames": { "pattern": "^[A-Z][A-Z0-9_]*$" },
+          "additionalProperties": { "type": "integer" }
+        }
+      }
+    },
+    "chip_file": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": ["schema", "chip"],
+      "properties": {
+        "schema": { "const": "verino-chip/1" },
+        "chip": { "$ref": "#/$defs/identifier" },
+        "soc_caps": { "$ref": "#/$defs/soc_caps_block" },
+        "manual": {
+          "type": "object",
+          "additionalProperties": false,
+          "properties": {
+            "strapping": {
+              "type": "object",
+              "propertyNames": { "$ref": "#/$defs/gpio" },
+              "additionalProperties": { "$ref": "#/$defs/strap" }
+            },
+            "spi_flash_pins": { "$ref": "#/$defs/pin_group" },
+            "octal_spi_pins": { "$ref": "#/$defs/pin_group" },
+            "usb_pins": { "$ref": "#/$defs/pin_group" },
+            "uart0_pins": { "$ref": "#/$defs/pin_group" },
+            "jtag_pins": { "$ref": "#/$defs/pin_group" },
+            "boot_behavior": {
+              "type": "object",
+              "additionalProperties": false,
+              "required": ["pins", "provenance"],
+              "properties": {
+                "pins": {
+                  "type": "object",
+                  "propertyNames": { "$ref": "#/$defs/gpio" },
+                  "additionalProperties": { "$ref": "#/$defs/boot_pin" }
+                },
+                "provenance": { "$ref": "#/$defs/provenance" }
+              }
+            }
+          }
+        }
+      }
+    },
+    "module_file": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": ["schema", "module", "chip", "manual"],
+      "properties": {
+        "schema": { "const": "verino-module/1" },
+        "module": { "$ref": "#/$defs/identifier" },
+        "chip": { "$ref": "#/$defs/identifier" },
+        "manual": {
+          "type": "object",
+          "additionalProperties": false,
+          "required": ["part_number", "memory", "exposed_gpios"],
+          "properties": {
+            "part_number": {
+              "type": "object",
+              "additionalProperties": false,
+              "required": ["value", "provenance"],
+              "properties": {
+                "value": { "type": "string", "minLength": 1 },
+                "provenance": { "$ref": "#/$defs/provenance" }
+              }
+            },
+            "memory": {
+              "type": "object",
+              "additionalProperties": false,
+              "required": ["flash", "provenance"],
+              "properties": {
+                "flash": {
+                  "type": "object",
+                  "additionalProperties": false,
+                  "required": ["size", "interface"],
+                  "properties": {
+                    "size": { "type": "string", "pattern": "^[1-9][0-9]*MB$" },
+                    "interface": { "enum": ["quad", "octal"] },
+                    "max_freq_mhz": { "type": "integer", "minimum": 1 }
+                  }
+                },
+                "psram": {
+                  "type": "object",
+                  "additionalProperties": false,
+                  "required": ["size", "interface"],
+                  "properties": {
+                    "size": { "type": "string", "pattern": "^[1-9][0-9]*MB$" },
+                    "interface": { "enum": ["quad", "octal"] },
+                    "in_package": { "type": "boolean" }
+                  }
+                },
+                "vdd_spi_volts": {
+                  "anyOf": [{ "enum": [1.8, 3.3] }, { "$ref": "#/$defs/todo" }]
+                },
+                "provenance": { "$ref": "#/$defs/provenance" }
+              }
+            },
+            "exposed_gpios": {
+              "type": "object",
+              "additionalProperties": false,
+              "required": ["pins", "provenance"],
+              "properties": {
+                "pins": { "$ref": "#/$defs/gpio_list" },
+                "provenance": { "$ref": "#/$defs/provenance" }
+              }
+            },
+            "internal_pins": { "$ref": "#/$defs/pin_group" }
+          }
+        }
+      }
+    },
+    "sources_file": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": ["schema", "sources"],
+      "properties": {
+        "schema": { "const": "verino-sources/1" },
+        "sources": {
+          "type": "object",
+          "propertyNames": { "$ref": "#/$defs/source_id" },
+          "additionalProperties": {
+            "type": "object",
+            "additionalProperties": false,
+            "required": ["kind", "title", "version", "url"],
+            "properties": {
+              "kind": { "enum": ["soc_caps", "datasheet", "errata", "community", "measured"] },
+              "title": { "type": "string", "minLength": 1 },
+              "version": { "type": "string", "minLength": 1 },
+              "url": { "type": "string", "pattern": "^https://" },
+              "sha256": { "type": "string", "pattern": "^[0-9a-f]{64}$" },
+              "commit": { "type": "string", "pattern": "^[0-9a-f]{40}$" }
+            }
+          }
+        }
+      }
+    }
+  }
+}

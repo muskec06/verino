@@ -11,3 +11,4 @@ All notable changes to this project are documented here. The format follows [Kee
 - CI workflow: `lint` (ruff, mypy) and `test` (pytest) on Python 3.11 and 3.13, Ubuntu and Windows; DCO sign-off check on pull requests.
 - `hardware.yaml` schema `verino-hw/1` (`schemas/verino-hw-1.schema.json`), typed model with line/column locations (`verino.model`), round-trip writing that keeps comments, examples in `examples/hw/` and a format reference (`docs/hardware-yaml.md`).
 - Diagnostics `E-YAML-001` and `E-SCHEMA-001`.
+- ESP32-S3 chip data (`chipdata/chips/esp32s3.yaml`), ESP32-S3-WROOM-1 N8R8/N16R8 module data, source registry and `schemas/chipdata.schema.json`; `verino.chipdata.extract_soc_caps` reads ESP-IDF v6 headers; reference `docs/chipdata.md`.
