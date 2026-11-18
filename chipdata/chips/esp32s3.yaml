@@ -121,6 +121,21 @@ manual:
       kind: datasheet
       source: esp32s3-datasheet@2.2
       ref: "Table 2-4 (p. 22); Section 2.3.5 (p. 26)"
+  spi_hosts:
+    general_purpose: [SPI2, SPI3]
+    provenance:
+      kind: datasheet
+      source: esp32s3-datasheet@2.2
+      ref: "Section 4.2.1.5 (p. 53)"
+      note: "SPI0 and SPI1 access flash/PSRAM; SPI2 and SPI3 are general-purpose controllers."
+  adc2_wifi:
+    behavior: shared
+    note: "ADC2 is also used by Wi-Fi; adc_oneshot_read arbitrates and may return ESP_ERR_TIMEOUT while Wi-Fi holds ADC2."
+    provenance:
+      kind: datasheet
+      source: esp-idf@v6.1.1
+      ref: "docs/en/api-reference/peripherals/adc/adc_oneshot.rst, sections Read Conversion Result and Hardware Limitations"
+      note: "ESP-IDF programming guide (vendor documentation) at the pinned commit."
   boot_behavior:
     # pull: weak pull at reset (Table 2-1, Table 7-1); glitches: Table 2-2.
     # state: pulses if the pin has a power-up glitch, else pulled_high / pulled_low from the pull, else hi_z.
