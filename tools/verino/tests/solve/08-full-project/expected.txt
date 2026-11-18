@@ -1,0 +1,13 @@
+buses.i2c0.sda      GPIO2   free pin with no findings
+buses.i2c0.scl      GPIO4   free pin with no findings
+buses.spi2.sclk     GPIO12  SPI2 IO_MUX pin for CLK
+buses.spi2.mosi     GPIO11  SPI2 IO_MUX pin for MOSI
+buses.spi2.miso     GPIO13  SPI2 IO_MUX pin for MISO
+buses.uart1.rx      GPIO7   free pin with no findings
+devices.sd.cs       GPIO10  SPI2 IO_MUX pin for CS
+devices.probe.pin   GPIO5   free pin with no findings
+devices.status.pin  GPIO8   free pin with no findings
+devices.pump.pin    GPIO6   free pin with no findings
+devices.soil.pin    GPIO1   ADC1 channel 0
+input.yaml: solved 11 pins
+check after solving: input.yaml: ok (0 errors, 0 warnings, 0 info, 0 acknowledged)

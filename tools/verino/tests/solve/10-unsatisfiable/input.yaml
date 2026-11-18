@@ -1,0 +1,7 @@
+# HC-SR04 echo is a 5 V output: no ESP32-S3 pin accepts it, so there is no solution.
+schema: verino-hw/1
+module: esp32-s3-wroom-1-n8r8
+uses: [wifi]
+
+devices:
+  tank: {part: hc-sr04, kind: gpio, trig: auto, echo: auto}

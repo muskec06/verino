@@ -1,0 +1,18 @@
+# Earlier solver pins on a strapping pin are moved with --reassign; locked pins stay.
+schema: verino-hw/1
+module: esp32-s3-wroom-1-n8r8
+uses: [wifi]
+
+buses:
+  i2c0:
+    kind: i2c
+    sda: {pin: GPIO1, origin: solver}
+    scl: {pin: GPIO4, origin: solver}
+    pullups: none
+  uart1:
+    kind: uart
+    tx: {pin: GPIO2, origin: solver, locked: true}
+    rx: {pin: GPIO5, origin: solver}
+
+devices:
+  env: {part: bme280, bus: i2c0, addr: 0x76}

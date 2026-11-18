@@ -1,0 +1,10 @@
+# SPI2 with an SD card: the solver should pick the IO_MUX pins.
+schema: verino-hw/1
+module: esp32-s3-wroom-1-n8r8
+uses: [wifi]
+
+buses:
+  spi2: {kind: spi, host: SPI2, sclk: auto, mosi: auto, miso: auto}
+
+devices:
+  sd: {part: sdcard, bus: spi2, cs: auto}

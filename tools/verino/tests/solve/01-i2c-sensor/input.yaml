@@ -1,0 +1,10 @@
+# One I2C sensor; both bus pins left to the solver.
+schema: verino-hw/1
+module: esp32-s3-wroom-1-n8r8
+uses: [wifi]
+
+buses:
+  i2c0: {kind: i2c, sda: auto, scl: auto, pullups: external_4k7}
+
+devices:
+  env: {part: bme280, bus: i2c0, addr: 0x76}

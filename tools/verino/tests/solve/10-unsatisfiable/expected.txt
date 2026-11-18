@@ -1,0 +1,6 @@
+no pin satisfies device 'tank' (echo) at devices.tank.echo; all 45 GPIOs rejected (a pin can fail several rules):
+  E-PIN-002: 9
+  E-RSV-001: 10
+  E-RSV-002: 2
+  E-VOLT-001: 45
+input.yaml: unsatisfiable

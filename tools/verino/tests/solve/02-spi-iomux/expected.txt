@@ -1,0 +1,6 @@
+buses.spi2.sclk  GPIO12  SPI2 IO_MUX pin for CLK
+buses.spi2.mosi  GPIO11  SPI2 IO_MUX pin for MOSI
+buses.spi2.miso  GPIO13  SPI2 IO_MUX pin for MISO
+devices.sd.cs    GPIO10  SPI2 IO_MUX pin for CS
+input.yaml: solved 4 pins
+check after solving: input.yaml: ok (0 errors, 0 warnings, 0 info, 0 acknowledged)

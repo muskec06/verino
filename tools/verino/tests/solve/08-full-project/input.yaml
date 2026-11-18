@@ -1,0 +1,21 @@
+# Greenhouse controller: buses and devices, one UART pin locked by the schematic.
+schema: verino-hw/1
+module: esp32-s3-wroom-1-n8r8
+uses: [wifi]
+
+buses:
+  i2c0: {kind: i2c, sda: auto, scl: auto, freq_hz: 400000, pullups: external_4k7}
+  spi2: {kind: spi, host: SPI2, sclk: auto, mosi: auto, miso: auto}
+  uart1:
+    kind: uart
+    tx: {pin: GPIO17, origin: schematic, locked: true}
+    rx: auto
+    baud: 9600
+
+devices:
+  env: {part: bme280, bus: i2c0, addr: 0x76}
+  sd: {part: sdcard, bus: spi2, cs: auto}
+  probe: {part: ds18b20, kind: onewire, pin: auto}
+  status: {part: ws2812, kind: gpio, pin: auto}
+  pump: {part: grove-relay, kind: gpio, pin: auto}
+  soil: {part: analog_in, kind: adc, pin: auto}

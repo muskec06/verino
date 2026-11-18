@@ -1,0 +1,4 @@
+devices.button.pin  GPIO2   RTC-capable pin (deep sleep in use)
+devices.probe.pin   GPIO1   RTC-capable pin (deep sleep in use)
+input.yaml: solved 2 pins
+check after solving: input.yaml: ok (0 errors, 0 warnings, 0 info, 0 acknowledged)
