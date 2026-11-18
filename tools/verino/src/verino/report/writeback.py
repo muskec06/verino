@@ -46,10 +46,18 @@ def reserved_pins(chip: ChipData, module: ModuleData) -> list[tuple[list[str], s
     return sorted(pairs, key=lambda p: (_num(p[0][0]), p[1]))
 
 
-def _pins_value(pins: list[str]) -> str | CommentedSeq:
+def pin_range(pins: list[str]) -> str | None:
+    """``GPIOa-GPIOb`` for three or more consecutive pins, else ``None``."""
     nums = [_num(p) for p in pins]
     if len(nums) > 2 and nums == list(range(nums[0], nums[-1] + 1)):
         return f"{pins[0]}-{pins[-1]}"
+    return None
+
+
+def _pins_value(pins: list[str]) -> str | CommentedSeq:
+    span = pin_range(pins)
+    if span is not None:
+        return span
     seq = CommentedSeq(pins)
     seq.fa.set_flow_style()
     return seq
