@@ -1,0 +1,59 @@
+# ESP-IDF partition table facts (change note 0005).
+# `generated` is written by `python -m verino.chipdata.extract_partitions`; do not edit it by hand.
+# `manual` is hand-written; every fact cites the ESP-IDF document it comes from.
+schema: verino-partitions/1
+generated:
+  presets:
+    singleapp:
+      file: components/partition_table/partitions_singleapp.csv
+      partitions:
+        - {name: nvs, type: data, subtype: nvs, size: '0x6000'}
+        - {name: phy_init, type: data, subtype: phy, size: '0x1000'}
+        - {name: factory, type: app, subtype: factory, size: 1M}
+    singleapp_large:
+      file: components/partition_table/partitions_singleapp_large.csv
+      partitions:
+        - {name: nvs, type: data, subtype: nvs, size: '0x6000'}
+        - {name: phy_init, type: data, subtype: phy, size: '0x1000'}
+        - {name: factory, type: app, subtype: factory, size: 1500K}
+    two_ota:
+      file: components/partition_table/partitions_two_ota.csv
+      partitions:
+        - {name: nvs, type: data, subtype: nvs, size: '0x4000'}
+        - {name: otadata, type: data, subtype: ota, size: '0x2000'}
+        - {name: phy_init, type: data, subtype: phy, size: '0x1000'}
+        - {name: factory, type: app, subtype: factory, size: 1M}
+        - {name: ota_0, type: app, subtype: ota_0, size: 1M}
+        - {name: ota_1, type: app, subtype: ota_1, size: 1M}
+    two_ota_large:
+      file: components/partition_table/partitions_two_ota_large.csv
+      partitions:
+        - {name: nvs, type: data, subtype: nvs, size: '0x6000'}
+        - {name: otadata, type: data, subtype: ota, size: '0x2000'}
+        - {name: phy_init, type: data, subtype: phy, size: '0x1000'}
+        - {name: ota_0, type: app, subtype: ota_0, size: 1700K}
+        - {name: ota_1, type: app, subtype: ota_1, size: 1700K}
+  provenance:
+    kind: soc_caps
+    source: esp-idf@v6.1.1
+    idf_version: v6.1.1
+    commit: 051e4c4eb20346e043cdd47bc388fde75ff8af63
+    generated_by: verino.chipdata.extract_partitions
+manual:
+  table:
+    offset: 0x8000
+    size: 0x1000
+    sector_size: 0x1000
+    app_align: 0x10000
+    provenance:
+      kind: datasheet
+      source: esp-idf@v6.1.1
+      ref: "docs/en/api-guides/partition-tables.rst, introduction (default offset 0x8000, table sector 0x1000) and section Offset & Size (4 KB offsets, 64 KB app alignment)"
+      note: "Offset is the default of CONFIG_PARTITION_TABLE_OFFSET; Verino does not support changing it yet."
+  ota:
+    app_subtypes: [ota_0, ota_1]
+    data_subtype: ota
+    provenance:
+      kind: datasheet
+      source: esp-idf@v6.1.1
+      ref: "docs/en/api-reference/system/ota.rst, sections OTA Process Overview and OTA Data Partition"

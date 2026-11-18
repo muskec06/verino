@@ -1,0 +1,13 @@
+# W-VAL-001: must trigger on the marked line (checksum of another file).
+schema: verino-hw/1
+module: esp32-s3-wroom-1-n8r8
+uses: []
+
+devices:
+  out: {part: relay-module, kind: gpio, pin: GPIO21}
+
+validation:  # <- W-VAL-001
+  tool: verino 0.1.0.dev0
+  chipdata: esp32s3@2026.11
+  status: ok
+  checksum: "sha256:0000000000000000000000000000000000000000000000000000000000000000"

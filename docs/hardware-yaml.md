@@ -51,13 +51,15 @@ memory:
   psram: {size: 8MB, mode: octal, freq: 80m, origin: module}
   cpu_freq_mhz: 240
   partitions:
-    preset: <preset id>          # and/or
+    preset: two_ota              # ESP-IDF built-in table, or:
     custom:
       - {name: nvs, type: data, subtype: nvs, size: 24K}
       - {name: storage, type: data, subtype: littlefs, size: rest}
 ```
 
-- Sizes: `<n>K`, `<n>KB`, `<n>M`, `<n>MB`. `rest` is accepted as a partition size.
+- Sizes: `<n>K`, `<n>KB`, `<n>M`, `<n>MB` (1024-based). `rest` runs to the end of flash.
+- `preset` is one of the ESP-IDF built-in tables `singleapp`, `singleapp_large`, `two_ota`, `two_ota_large` ([`chipdata/idf/partitions.yaml`](../chipdata/idf/partitions.yaml)). When `custom` is given it is the table and `preset` is ignored.
+- Partitions are placed the way ESP-IDF places blank offsets: after the partition table at 0x8000, data partitions on 4 KB boundaries, app partitions on 64 KB boundaries. `E-MEM-001`, `E-MEM-002` and `E-MEM-003` check the result against the module.
 - `flash.mode`: `qio`, `qout`, `dio`, `dout`. `psram.mode`: `quad`, `octal`. Frequencies: `<n>m` (MHz).
 - `origin`: `module` (taken from module data) or `user`.
 - Whether these values fit the module is checked by `verino pins check`.
@@ -101,7 +103,7 @@ ack:
 
 ## Tool-written blocks
 
-Tools write only `reserved` and `validation` and never change user fields; comments and key order are preserved.
+Tools write only `reserved` and `validation` and never change user fields; comments and key order are preserved. `verino pins check --write` fills both ([CLI reference](cli.md)).
 
 ```yaml
 reserved:
@@ -113,6 +115,11 @@ validation:
   warnings: []
   checksum: "sha256:<64 hex digits>"
 ```
+
+- `reserved`: flash, octal PSRAM/flash, USB and UART0 console pins of the module and chip.
+- `validation.chipdata`: `<chip>@<version>`, the `version` of `chipdata/sources.yaml`.
+- `validation.warnings`: the active error and warning IDs.
+- `validation.checksum`: sha256 of the canonical JSON of the file without `reserved` and `validation`. Editing comments keeps it valid; changing any value makes `verino pins check` report `W-VAL-001`.
 
 ## Diagnostics
 

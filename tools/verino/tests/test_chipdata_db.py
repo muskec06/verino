@@ -55,3 +55,15 @@ def test_part_view() -> None:
     assert DB.part("no-such-part") is None
     chip = DB.chip("esp32s3")
     assert chip is not None and chip.io_input_max_volts == 3.6
+
+
+def test_partition_and_version_view() -> None:
+    data = DB.partitions()
+    assert (data.table_offset, data.table_size, data.app_align) == (0x8000, 0x1000, 0x10000)
+    assert data.ota_app_subtypes == ("ota_0", "ota_1")
+    assert [p.name for p in data.presets["two_ota_large"]][-2:] == ["ota_0", "ota_1"]
+    assert DB.version() == "2026.11"
+    module = DB.module("esp32-s3-wroom-1-n8r8")
+    assert module is not None
+    assert (module.flash_size, module.flash_max_freq_mhz) == ("8MB", 80)
+    assert (module.psram_size, module.psram_interface) == ("8MB", "octal")

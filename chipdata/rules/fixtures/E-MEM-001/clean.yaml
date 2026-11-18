@@ -1,0 +1,11 @@
+# E-MEM-001: must not trigger (storage takes the rest of the 8 MB flash).
+schema: verino-hw/1
+module: esp32-s3-wroom-1-n8r8
+uses: []
+
+memory:
+  partitions:
+    custom:
+      - {name: nvs, type: data, subtype: nvs, size: 24K}
+      - {name: factory, type: app, subtype: factory, size: 4M}
+      - {name: storage, type: data, subtype: spiffs, size: rest}

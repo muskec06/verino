@@ -140,7 +140,7 @@
           "additionalProperties": false,
           "minProperties": 1,
           "properties": {
-            "preset": { "$ref": "#/$defs/identifier" },
+            "preset": { "description": "ESP-IDF built-in table, see chipdata/idf/partitions.yaml. Ignored when custom is given.", "enum": ["singleapp", "singleapp_large", "two_ota", "two_ota_large"] },
             "custom": {
               "type": "array",
               "minItems": 1,

@@ -1,0 +1,8 @@
+# E-MEM-003: must not trigger (values match the module).
+schema: verino-hw/1
+module: esp32-s3-wroom-1-n8r8
+uses: []
+
+memory:
+  flash: {size: 8MB, mode: qio, freq: 80m, origin: module}
+  psram: {size: 8MB, mode: octal, freq: 80m, origin: module}

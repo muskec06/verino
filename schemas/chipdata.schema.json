@@ -6,7 +6,7 @@
   "type": "object",
   "required": ["schema"],
   "properties": {
-    "schema": { "enum": ["verino-chip/1", "verino-module/1", "verino-sources/1", "verino-rules/1", "verino-part/1"] }
+    "schema": { "enum": ["verino-chip/1", "verino-module/1", "verino-sources/1", "verino-rules/1", "verino-part/1", "verino-partitions/1"] }
   },
   "allOf": [
     {
@@ -28,6 +28,10 @@
     {
       "if": { "properties": { "schema": { "const": "verino-part/1" } } },
       "then": { "$ref": "#/$defs/part_file" }
+    },
+    {
+      "if": { "properties": { "schema": { "const": "verino-partitions/1" } } },
+      "then": { "$ref": "#/$defs/partitions_file" }
     }
   ],
   "$defs": {
@@ -415,6 +419,87 @@
         }
       }
     },
+    "partition_entry": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": ["name", "type", "subtype", "size"],
+      "properties": {
+        "name": { "type": "string", "pattern": "^[A-Za-z0-9_]{1,16}$" },
+        "type": { "enum": ["app", "data"] },
+        "subtype": { "type": "string", "pattern": "^[a-z0-9_]+$" },
+        "size": { "type": "string", "pattern": "^(0x[0-9a-fA-F]+|[0-9]+[KM]?)$" }
+      }
+    },
+    "partitions_file": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": ["schema", "generated", "manual"],
+      "properties": {
+        "schema": { "const": "verino-partitions/1" },
+        "generated": {
+          "description": "Written only by verino.chipdata.extract_partitions.",
+          "type": "object",
+          "additionalProperties": false,
+          "required": ["presets", "provenance"],
+          "properties": {
+            "presets": {
+              "type": "object",
+              "propertyNames": { "$ref": "#/$defs/identifier" },
+              "additionalProperties": {
+                "type": "object",
+                "additionalProperties": false,
+                "required": ["file", "partitions"],
+                "properties": {
+                  "file": { "type": "string", "pattern": "^components/partition_table/[a-z0-9_]+\\.csv$" },
+                  "partitions": { "type": "array", "minItems": 1, "items": { "$ref": "#/$defs/partition_entry" } }
+                }
+              }
+            },
+            "provenance": {
+              "type": "object",
+              "additionalProperties": false,
+              "required": ["kind", "source", "idf_version", "generated_by"],
+              "properties": {
+                "kind": { "const": "soc_caps" },
+                "source": { "$ref": "#/$defs/source_id" },
+                "idf_version": { "type": "string", "pattern": "^v[0-9]+\\.[0-9]+\\.[0-9]+$" },
+                "commit": { "type": "string", "pattern": "^[0-9a-f]{40}$" },
+                "generated_by": { "const": "verino.chipdata.extract_partitions" }
+              }
+            }
+          }
+        },
+        "manual": {
+          "type": "object",
+          "additionalProperties": false,
+          "required": ["table", "ota"],
+          "properties": {
+            "table": {
+              "type": "object",
+              "additionalProperties": false,
+              "required": ["offset", "size", "sector_size", "app_align", "provenance"],
+              "properties": {
+                "offset": { "type": "integer", "minimum": 0 },
+                "size": { "type": "integer", "minimum": 1 },
+                "sector_size": { "type": "integer", "minimum": 1 },
+                "app_align": { "type": "integer", "minimum": 1 },
+                "provenance": { "$ref": "#/$defs/provenance" }
+              }
+            },
+            "ota": {
+              "type": "object",
+              "additionalProperties": false,
+              "required": ["app_subtypes", "data_subtype", "provenance"],
+              "properties": {
+                "app_subtypes": { "type": "array", "minItems": 1, "items": { "type": "string", "pattern": "^[a-z0-9_]+$" } },
+                "data_subtype": { "type": "string", "pattern": "^[a-z0-9_]+$" },
+                "provenance": { "$ref": "#/$defs/provenance" }
+              }
+            }
+          }
+        }
+      }
+    },
     "rules_file": {
       "type": "object",
       "additionalProperties": false,
@@ -443,9 +528,10 @@
     "sources_file": {
       "type": "object",
       "additionalProperties": false,
-      "required": ["schema", "sources"],
+      "required": ["schema", "version", "sources"],
       "properties": {
         "schema": { "const": "verino-sources/1" },
+        "version": { "description": "Chip data release, used in validation.chipdata (change note 0005).", "type": "string", "pattern": "^[0-9]{4}\\.[0-9]{2}(\\.[0-9]+)?$" },
         "sources": {
           "type": "object",
           "propertyNames": { "$ref": "#/$defs/source_id" },
