@@ -70,9 +70,9 @@ Result (2026-11-18): outputs of `examples/hw/s3-datalogger.yaml` build in an ESP
 
 ## T7 — Pin-planner skill and MCP server
 
-- [ ] `src/verino/mcp/`: `list_boards`, `solve_pins`, `check_hw`, `render_hw`; they call the CLI functions.
-- [ ] `skills/pin-planner/SKILL.md`: flow (board choice → schematic described in text → interfaces/devices → solve → check → render); calls tools, embeds no rules.
-- [ ] MCP setup notes for Claude Code and Claude Desktop in `README.md`.
+- [x] `src/verino/mcp/`: `list_boards`, `solve_pins`, `check_hw`, `render_hw`; they call the CLI functions.
+- [x] `skills/pin-planner/SKILL.md`: flow (board choice → schematic described in text → interfaces/devices → solve → check → render); calls tools, embeds no rules.
+- [x] MCP setup notes for Claude Code and Claude Desktop in `README.md`.
 
 **Done when:** an end-to-end conversation with Claude produces a valid `hardware.yaml` and `pins.hpp` (transcript in `docs/plan/demo-t7.md`).
 
