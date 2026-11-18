@@ -1,0 +1,33 @@
+# Seeed Studio Grove - Relay v1.2. Reference: docs/chipdata.md.
+schema: verino-part/1
+part: grove-relay
+title: Seeed Studio Grove - Relay v1.2 (HLS8L relay, NPN low-side driver)
+manual:
+  interface:
+    kinds: [gpio]
+    provenance:
+      kind: datasheet
+      source: grove-relay-schematic@1.2
+      ref: "Schematic sheet 1/1: connector J2 pin 1 (SIG)"
+  pins:
+    roles:
+      pin: {direction: input, note: "SIG drives the base of Q1 (S8050) through R1 4.7 kOhm."}
+    provenance:
+      kind: datasheet
+      source: grove-relay-schematic@1.2
+      ref: "Schematic sheet 1/1: R1, R3, Q1"
+  reset_imposes:
+    roles: {pin: pulled_low}
+    note: "R3 (47 kOhm) ties the base of Q1 to GND, so SIG sees about 52 kOhm to GND."
+    provenance:
+      kind: datasheet
+      source: grove-relay-schematic@1.2
+      ref: "Schematic sheet 1/1: R1 4.7 kOhm, R3 47 kOhm, Q1"
+  actuator:
+    value: true
+    safe_boot_level: low
+    note: "SIG HIGH turns Q1 on and energises the relay coil; LOW keeps the relay off."
+    provenance:
+      kind: datasheet
+      source: grove-relay-schematic@1.2
+      ref: "Schematic sheet 1/1: Q1 low-side switch on relay coil V-"

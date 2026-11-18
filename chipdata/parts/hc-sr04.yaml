@@ -1,0 +1,26 @@
+# HC-SR04 ultrasonic ranging module (no manufacturer datasheet; community manual). Reference: docs/chipdata.md.
+schema: verino-part/1
+part: hc-sr04
+title: HC-SR04 ultrasonic ranging module
+manual:
+  interface:
+    kinds: [gpio]
+    provenance:
+      kind: community
+      source: hc-sr04-manual@elecfreaks
+      ref: "Product features and wiring (p. 1)"
+  supply:
+    min_volts: 5.0
+    max_volts: 5.0
+    provenance:
+      kind: community
+      source: hc-sr04-manual@elecfreaks
+      ref: "Electric Parameter (p. 1), working voltage DC 5 V"
+  pins:
+    roles:
+      trig: {direction: input}
+      echo: {direction: output, level: supply, note: "TTL-level echo pulse from the 5 V module."}
+    provenance:
+      kind: community
+      source: hc-sr04-manual@elecfreaks
+      ref: "Electric Parameter (p. 1); Timing diagram (p. 2)"

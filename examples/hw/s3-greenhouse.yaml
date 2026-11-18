@@ -37,5 +37,5 @@ devices:
   env: {part: bme280, bus: i2c0, addr: 0x76}
   soil_temp: {part: ds18b20, kind: onewire, pin: GPIO4}
   status: {part: ws2812, pin: LED_RGB}   # board alias, resolved per board_rev
-  pump: {part: relay-module, kind: gpio, pin: {pin: GPIO5, origin: user}}
+  pump: {part: grove-relay, kind: gpio, pin: {pin: GPIO5, origin: user}}
   tank: {part: hc-sr04, kind: gpio, trig: GPIO15, echo: GPIO16}

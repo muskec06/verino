@@ -55,6 +55,7 @@ class ChipData:
     idf_source: str
     spi_hosts: tuple[str, ...] = ()
     adc2_wifi: str | None = None
+    io_input_max_volts: float | None = None
 
     def pin(self, name: str) -> PinInfo | None:
         return self.pins.get(name)
@@ -68,6 +69,48 @@ class ModuleData:
     exposed: frozenset[str]
     internal: dict[str, str]
     vdd_spi_volts: float | str | None = None
+
+
+@dataclass(frozen=True)
+class PartPin:
+    direction: str
+    level: str | None = None
+
+
+@dataclass(frozen=True)
+class PartData:
+    part: str
+    title: str
+    kinds: tuple[str, ...]
+    supply: tuple[float, float] | None
+    supply_kind: str | None
+    pins: dict[str, PartPin]
+    reset_imposes: dict[str, str]
+    actuator: bool = False
+    safe_boot_level: str | None = None
+
+
+def _part_from_doc(doc: Any) -> PartData:
+    manual = doc["manual"]
+    supply = manual.get("supply")
+    actuator = manual.get("actuator") or {}
+    return PartData(
+        part=str(doc["part"]),
+        title=str(doc["title"]),
+        kinds=tuple(str(k) for k in manual["interface"]["kinds"]),
+        supply=(float(supply["min_volts"]), float(supply["max_volts"])) if supply else None,
+        supply_kind=str(supply["provenance"]["kind"]) if supply else None,
+        pins={
+            str(role): PartPin(str(p["direction"]), str(p["level"]) if "level" in p else None)
+            for role, p in ((manual.get("pins") or {}).get("roles") or {}).items()
+        },
+        reset_imposes={
+            str(role): str(level)
+            for role, level in ((manual.get("reset_imposes") or {}).get("roles") or {}).items()
+        },
+        actuator=bool(actuator.get("value", False)),
+        safe_boot_level=str(actuator["safe_boot_level"]) if "safe_boot_level" in actuator else None,
+    )
 
 
 def _gpio_num(name: str) -> int:
@@ -128,6 +171,9 @@ def _chip_from_doc(doc: Any) -> ChipData:
         idf_source=str(caps["provenance"]["source"]),
         spi_hosts=tuple(str(h) for h in (manual.get("spi_hosts") or {}).get("general_purpose", [])),
         adc2_wifi=str(adc2["behavior"]) if adc2 else None,
+        io_input_max_volts=(
+            float(manual["io_voltage"]["input_max_volts"]) if "io_voltage" in manual else None
+        ),
     )
 
 
@@ -180,6 +226,11 @@ class ChipDB:
     def module(self, module: str) -> ModuleData | None:
         doc = self._doc("modules", f"{module}.yaml")
         return _module_from_doc(doc) if doc is not None else None
+
+    @functools.cache  # noqa: B019
+    def part(self, part: str) -> PartData | None:
+        doc = self._doc("parts", f"{part}.yaml")
+        return _part_from_doc(doc) if doc is not None else None
 
     def has_board(self, board: str) -> bool:
         return (self.root / "boards" / f"{board}.yaml").is_file()

@@ -21,10 +21,12 @@ DATA_FILES = sorted(
         CHIPDATA / "rules" / "rules.yaml",
         *CHIPDATA.glob("chips/*.yaml"),
         *CHIPDATA.glob("modules/*.yaml"),
+        *CHIPDATA.glob("parts/*.yaml"),
     ]
 )
 CHIP_FILES = sorted(CHIPDATA.glob("chips/*.yaml"))
 MODULE_FILES = sorted(CHIPDATA.glob("modules/*.yaml"))
+PART_FILES = sorted(CHIPDATA.glob("parts/*.yaml"))
 TODO = "TODO(verify)"
 
 
@@ -69,7 +71,7 @@ def test_file_matches_schema(path: Path) -> None:
     assert errors == []
 
 
-@pytest.mark.parametrize("path", [*CHIP_FILES, *MODULE_FILES], ids=_rel)
+@pytest.mark.parametrize("path", [*CHIP_FILES, *MODULE_FILES, *PART_FILES], ids=_rel)
 def test_every_manual_fact_has_provenance(path: Path) -> None:
     manual = _load(path).get("manual") or {}
     missing = []
@@ -82,7 +84,7 @@ def test_every_manual_fact_has_provenance(path: Path) -> None:
     assert missing == []
 
 
-@pytest.mark.parametrize("path", [*CHIP_FILES, *MODULE_FILES], ids=_rel)
+@pytest.mark.parametrize("path", [*CHIP_FILES, *MODULE_FILES, *PART_FILES], ids=_rel)
 def test_provenance_sources_are_registered(path: Path) -> None:
     registered = set(_load(CHIPDATA / "sources.yaml")["sources"])
     cited = {
