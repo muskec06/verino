@@ -50,9 +50,9 @@ Rules: tasks run in order; one branch/PR per task; a task is ticked only when ev
 
 ## T5 — `verino pins check` and `verino pins render`
 
-- [ ] `check`: human output + `--json`; exit code 0 clean, 1 warnings, 2 errors. `--write` fills `reserved` and `validation` and writes the checksum.
+- [x] `check`: human output + `--json`; exit code 0 clean, 1 warnings, 2 errors. `--write` fills `reserved` and `validation` and writes the checksum.
 - [ ] `render`: `gen/pins.hpp` (`constexpr` constants, compiles standalone in Arduino and ESP-IDF), `sdkconfig.defaults` fragment (flash, PSRAM, CPU), `partitions.csv`, `pinout.md`.
-- [ ] Memory checks: partitions fit in flash, two app partitions when OTA is selected, PSRAM mode matches the module.
+- [x] Memory checks: partitions fit in flash, two app partitions when OTA is selected, PSRAM mode matches the module.
 - [ ] Golden-file tests (byte-identical output).
 
 **Done when:** `pins.hpp` generated from an example compiles in an ESP-IDF project (verified once on the user's machine; note the result here).

@@ -19,11 +19,15 @@ A matching finding is still reported, marked `[acknowledged: <reason>]`, and doe
 
 ## Status
 
-| Status | Meaning | Exit code (T5) |
+| Status | Meaning | `verino pins check` exit code |
 | --- | --- | --- |
 | `ok` | no active findings except info | 0 |
 | `warnings` | at least one active warning | 1 |
 | `error` | at least one active error | 2 |
+
+## Memory rules
+
+`E-MEM-001` (partitions fit in flash), `E-MEM-002` (OTA layout complete) and `E-MEM-003` (flash/PSRAM match the module) read `memory` in `hardware.yaml`, the module's memory data and the ESP-IDF partition facts in `chipdata/idf/partitions.yaml`. `W-VAL-001` reports a `validation` block whose checksum no longer matches the file.
 
 ## Python API
 
