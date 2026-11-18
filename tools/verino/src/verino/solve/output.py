@@ -9,7 +9,7 @@ from typing import Any
 from ruamel.yaml.comments import CommentedMap
 
 from verino.chipdata.db import ChipDB
-from verino.model import load_hardware
+from verino.model import LoadResult, load_hardware
 from verino.model.yamlio import dump_text
 from verino.report import summary, to_dict
 from verino.solve.solver import SolveResult, solve
@@ -68,13 +68,21 @@ def solve_file(
     """Solve ``path``; with ``write`` put the chosen pins into the file as ``origin: solver``."""
     base = load_hardware(path)
     result = solve(base, db, reassign=reassign)
-    if not write or result.status != "solved":
-        return result
+    if write and result.status == "solved":
+        path.write_text(solved_text(base, result), encoding="utf-8", newline="\n")
+    return result
+
+
+def solved_text(base: LoadResult, result: SolveResult) -> str:
+    """``base`` as YAML text with the chosen pins written as ``origin: solver``.
+
+    Comments, key order and every other field are kept (round-trip). ``base.document``
+    is modified in place.
+    """
     doc = base.document
     for a in result.assignments:
         section = "buses" if a.slot.owner_kind == "bus" else "devices"
         value = CommentedMap([("pin", a.pin), ("origin", "solver")])
         value.fa.set_flow_style()
         doc[section][a.slot.owner_id][a.slot.role] = value
-    path.write_text(dump_text(doc), encoding="utf-8", newline="\n")
-    return result
+    return dump_text(doc)

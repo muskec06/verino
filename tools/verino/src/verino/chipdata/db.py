@@ -313,3 +313,9 @@ class ChipDB:
 
     def modules(self) -> list[str]:
         return sorted(p.stem for p in (self.root / "modules").glob("*.yaml"))
+
+    def boards(self) -> list[str]:
+        return sorted(p.stem for p in (self.root / "boards").glob("*.yaml"))
+
+    def parts(self) -> list[str]:
+        return sorted(p.stem for p in (self.root / "parts").glob("*.yaml"))
