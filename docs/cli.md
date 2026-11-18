@@ -128,3 +128,25 @@ no pin satisfies device 'tank' (echo) at devices.tank.echo; all 45 GPIOs rejecte
 ```
 
 Board default pins are not used yet: they need board data (T8).
+
+## `verino mcp`
+
+```bash
+verino mcp                                    # MCP server on stdio
+```
+
+Runs the MCP server used by agents (setup: [README](../README.md#mcp-server)). It has four tools. Each one calls the same functions as the commands above and returns the same JSON, so an agent sees exactly what `--json` prints.
+
+| Tool | Same as | Arguments | Extra fields in the result |
+| --- | --- | --- | --- |
+| `list_boards` | - | `chip`, `keyword` (both optional) | `verino-boards/1`: `chipdata` version, `boards`, `modules` (chip, part number, flash, PSRAM), `parts` (title, interface kinds, pin roles) |
+| `check_hw` | `pins check --json` | `path` or `yaml`; `write` | with `write`: `written`, `reason` |
+| `solve_pins` | `pins solve --json` | `path` or `yaml`; `write`, `reassign` | `yaml` (solved file text, `null` unless solved), `written` |
+| `render_hw` | `pins render --json` | `path` or `yaml`; `out_dir` | `files` (path → text; empty while the check reports errors) |
+
+- Give exactly one of `path` (a file the server can read; relative to the directory it was started in) or `yaml` (the file text, for clients without a file system). Text input is reported as `hardware.yaml`.
+- Nothing is written unless asked: `write: true` (needs `path`) or `out_dir`. Unlike `pins render`, `render_hw` does not write next to the input by default.
+- Input and output differ slightly from the design table; see change note [0007](changes/0007-mcp-tool-inputs.md).
+- Wrong arguments (both or neither of `path`/`yaml`, a missing file, `write` without `path`) return a tool error. Problems in the file itself are findings in the report, as on the command line.
+
+The conversation flow on top of these tools is the pin-planner skill: [`skills/pin-planner/SKILL.md`](../skills/pin-planner/SKILL.md).

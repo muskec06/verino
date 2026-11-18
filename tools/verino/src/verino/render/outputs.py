@@ -8,14 +8,16 @@ from __future__ import annotations
 
 from dataclasses import dataclass
 from pathlib import Path, PurePath
+from typing import Any
 
 from jinja2 import Environment, PackageLoader, StrictUndefined
 
 from verino import __version__
 from verino.chipdata.db import ChipData, ChipDB, ModuleData
 from verino.chipdata.partitions import Placed, entries, format_size, layout, parse_size
-from verino.model import load_hardware
+from verino.model import LoadResult, load_hardware
 from verino.model.types import HardwareSpec, PinAssignment
+from verino.report.format import to_dict
 from verino.report.writeback import pin_range, reserved_pins
 from verino.rules import Report, check
 
@@ -23,6 +25,7 @@ PINS_HPP = "gen/pins.hpp"
 SDKCONFIG = "gen/sdkconfig.defaults"
 PARTITIONS_CSV = "gen/partitions.csv"
 PINOUT_MD = "gen/pinout.md"
+RENDER_SCHEMA = "verino-render/1"
 
 # C++ keywords that are also valid bus/device ids (lowercase, [a-z][a-z0-9_]*).
 _CPP_KEYWORDS_TEXT = (
@@ -203,10 +206,9 @@ class RenderResult:
     reason: str = ""
 
 
-def render_file(path: Path, db: ChipDB | None = None) -> RenderResult:
-    """Check ``path`` and render it when the check has no active errors."""
+def render_loaded(result: LoadResult, db: ChipDB | None = None) -> RenderResult:
+    """Check a loaded ``hardware.yaml`` and render it when the check has no active errors."""
     db = db if db is not None else ChipDB()
-    result = load_hardware(path)
     report = check(result, db)
     if result.spec is None or report.status == "error":
         return RenderResult(report, {}, "the check reports errors")
@@ -215,3 +217,30 @@ def render_file(path: Path, db: ChipDB | None = None) -> RenderResult:
     if module is None or chip is None:
         return RenderResult(report, {}, "no chip data for the module")
     return RenderResult(report, render(result.spec, result.file, report.status, module, chip, db))
+
+
+def render_file(path: Path, db: ChipDB | None = None) -> RenderResult:
+    """Check ``path`` and render it when the check has no active errors."""
+    return render_loaded(load_hardware(path), db)
+
+
+def write_outputs(result: RenderResult, root: Path) -> list[str]:
+    """Write the rendered files below ``root``; returns the written paths."""
+    written: list[str] = []
+    for rel, text in result.files.items():
+        target = root / rel
+        target.parent.mkdir(parents=True, exist_ok=True)
+        target.write_text(text, encoding="utf-8", newline="\n")
+        written.append(target.as_posix())
+    return written
+
+
+def to_dict_result(result: RenderResult, written: list[str]) -> dict[str, Any]:
+    """The ``verino-render/1`` JSON document."""
+    return {
+        "schema": RENDER_SCHEMA,
+        "file": result.report.file,
+        "written": written,
+        "reason": result.reason or None,
+        "report": to_dict(result.report),
+    }

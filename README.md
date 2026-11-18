@@ -35,6 +35,30 @@ E-STRAP-002  hardware.yaml:42  GPIO12 is a strapping pin. A DS18B20 pull-up hold
              Fix: use GPIO13 or GPIO14.
 ```
 
+## MCP server
+
+`verino mcp` runs an MCP server on stdio with the tools `list_boards`, `check_hw`, `solve_pins` and `render_hw` ([reference](docs/cli.md#verino-mcp)). The [pin-planner skill](skills/pin-planner/SKILL.md) describes the conversation that uses them. Install the package first (from a checkout: `pip install -e tools/verino`) so that `verino` is on your `PATH`.
+
+**Claude Code** (run in your project directory, so `path` arguments resolve there):
+
+```bash
+claude mcp add verino -- verino mcp
+```
+
+To use the skill, copy `skills/pin-planner/` into your project's `.claude/skills/` (or `~/.claude/skills/` for every project).
+
+**Claude Desktop:** add the server to `claude_desktop_config.json` (Settings → Developer → Edit Config) and restart the app. Use the full path to `verino` if it is not on the `PATH` Claude Desktop sees (for example the `Scripts`/`bin` folder of your virtual environment):
+
+```json
+{
+  "mcpServers": {
+    "verino": { "command": "verino", "args": ["mcp"] }
+  }
+}
+```
+
+Claude Desktop has no project directory, so the tools take the file text (`yaml`) and return the solved file and the generated files as text. To use the skill there, zip `skills/pin-planner/` and upload it as a custom skill.
+
 ## Documentation
 
 - [Architecture overview](docs/architecture.md)

@@ -8,8 +8,9 @@ import typer
 
 from verino import __version__
 from verino.model import load_hardware
-from verino.render import render_file
-from verino.report import to_dict, to_json, to_text, write_back
+from verino.render import render_file, write_outputs
+from verino.render import to_dict_result as render_dict
+from verino.report import to_json, to_text, write_back
 from verino.rules import check
 from verino.solve.output import solve_file
 from verino.solve.output import to_json as solve_json
@@ -84,23 +85,11 @@ def pins_render(
 
     Nothing is written when the check reports errors (exit code 2).
     """
-    root = out if out is not None else file.parent
     result = render_file(file)
-    for rel, text in result.files.items():
-        target = root / rel
-        target.parent.mkdir(parents=True, exist_ok=True)
-        target.write_text(text, encoding="utf-8", newline="\n")
-    written = [(root / rel).as_posix() for rel in result.files]
+    written = write_outputs(result, out if out is not None else file.parent)
     code = 0 if result.files else 2
     if as_json:
-        data = {
-            "schema": "verino-render/1",
-            "file": result.report.file,
-            "written": written,
-            "reason": result.reason or None,
-            "report": to_dict(result.report),
-        }
-        typer.echo(json.dumps(data, indent=2, ensure_ascii=False))
+        typer.echo(json.dumps(render_dict(result, written), indent=2, ensure_ascii=False))
     else:
         if result.report.findings:
             typer.echo(to_text(result.report), nl=False)
@@ -130,3 +119,11 @@ def pins_solve(
     result = solve_file(file, write=write, reassign=reassign)
     typer.echo(solve_json(result) if as_json else solve_text(result), nl=False)
     raise typer.Exit(result.exit_code)
+
+
+@app.command("mcp")
+def mcp_server() -> None:
+    """Run the MCP server on stdio (tools: list_boards, check_hw, solve_pins, render_hw)."""
+    from verino.mcp import build_server
+
+    build_server().run("stdio")
