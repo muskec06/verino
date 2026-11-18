@@ -13,6 +13,7 @@ Origin = Literal["schematic", "user", "board_default", "solver", "cubemx"]
 BusKind = Literal["i2c", "spi", "uart"]
 DeviceKind = Literal["adc", "gpio", "onewire", "pwm"]
 ValidationStatus = Literal["ok", "warnings", "error"]
+Use = Literal["wifi", "ble", "deep_sleep"]
 
 
 @dataclass(frozen=True, order=True)
@@ -147,9 +148,15 @@ class HardwareSpec:
     board_rev: str | None = None
     chip_rev: str | None = None
     hw_rev: str | None = None
+    uses: tuple[Use, ...] | None = None
     memory: Memory | None = None
     buses: dict[str, Bus] = field(default_factory=dict)
     devices: dict[str, Device] = field(default_factory=dict)
     ack: tuple[Ack, ...] = ()
     reserved: tuple[Reserved, ...] = ()
     validation: Validation | None = None
+
+    @property
+    def uses_wifi(self) -> bool:
+        """Wi-Fi is assumed when ``uses`` is missing (change note 0003)."""
+        return self.uses is None or "wifi" in self.uses

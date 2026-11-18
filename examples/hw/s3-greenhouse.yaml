@@ -6,6 +6,7 @@ board: esp32-s3-devkitc-1
 board_rev: v1.1
 module: esp32-s3-wroom-1-n16r8
 hw_rev: A
+uses: [wifi]
 
 memory:
   flash: {size: 16MB, mode: qio, freq: 80m, origin: module}

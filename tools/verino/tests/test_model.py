@@ -27,12 +27,16 @@ def test_top_level_fields() -> None:
     assert spec.module == "esp32-s3-wroom-1-n16r8"
     assert spec.chip_rev is None
     assert spec.hw_rev == "A"
+    assert spec.uses == ("wifi",)
+    assert spec.uses_wifi
 
 
 def test_source_defaults_to_native() -> None:
     spec = parse_hardware("schema: verino-hw/1\nmodule: m\n", "hw.yaml").spec
     assert spec is not None
     assert spec.source == "native"
+    assert spec.uses is None
+    assert spec.uses_wifi  # missing means Wi-Fi (change note 0003)
     assert spec.buses == {}
     assert spec.devices == {}
 
@@ -147,3 +151,16 @@ def test_reversed_reserved_range_is_rejected() -> None:
     diags = parse_hardware(text, "hw.yaml").diagnostics
     assert len(diags) == 1
     assert diags[0].loc.line == 4
+
+
+def test_uses_without_wifi() -> None:
+    spec = parse_hardware("schema: verino-hw/1\nmodule: m\nuses: [ble, deep_sleep]\n").spec
+    assert spec is not None
+    assert spec.uses == ("ble", "deep_sleep")
+    assert not spec.uses_wifi
+
+
+def test_uses_rejects_unknown_values() -> None:
+    diags = parse_hardware("schema: verino-hw/1\nmodule: m\nuses: [lora]\n").diagnostics
+    assert [d.rule_id for d in diags] == ["E-SCHEMA-001"]
+    assert "'lora' is not allowed" in str(diags[0])
