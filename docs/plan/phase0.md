@@ -28,10 +28,10 @@ Rules: tasks run in order; one branch/PR per task; a task is ticked only when ev
 
 ## T3 — ESP32-S3 chip data
 
-- [ ] `src/verino/chipdata/extract_soc_caps.py`: takes an ESP-IDF source path; extracts valid GPIOs, output-capable mask, ADC/RTC channels and peripheral counts from `soc_caps.h` and related soc headers. Output carries `provenance: soc_caps` and the IDF version.
-- [ ] `chipdata/chips/esp32s3.yaml`: generated part + hand-written part (strapping GPIO0/3/45/46, USB GPIO19/20, UART0 GPIO43/44, flash GPIO26–32, octal PSRAM GPIO33–37, `boot_behavior`). Every hand-written field cites datasheet name + page/section.
-- [ ] `chipdata/modules/`: `esp32-s3-wroom-1-n8r8`, `esp32-s3-wroom-1-n16r8` (flash/PSRAM size and mode, internally used pins).
-- [ ] `schemas/chipdata.schema.json` + tests.
+- [x] `src/verino/chipdata/extract_soc_caps.py`: takes an ESP-IDF source path; extracts valid GPIOs, output-capable mask, ADC/RTC channels and peripheral counts from `soc_caps.h` and related soc headers. Output carries `provenance: soc_caps` and the IDF version.
+- [x] `chipdata/chips/esp32s3.yaml`: generated part + hand-written part (strapping GPIO0/3/45/46, USB GPIO19/20, UART0 GPIO43/44, flash GPIO26–32, octal PSRAM GPIO33–37, `boot_behavior`). Every hand-written field cites datasheet name + page/section.
+- [x] `chipdata/modules/`: `esp32-s3-wroom-1-n8r8`, `esp32-s3-wroom-1-n16r8` (flash/PSRAM size and mode, internally used pins).
+- [x] `schemas/chipdata.schema.json` + tests.
 
 **Done when:** data passes the schema; no hand-written field lacks a reference (a test enforces this); uncertain values are `TODO(verify)` and listed at the end of this file.
 
@@ -99,6 +99,9 @@ If the gate is not met, do not start Phase 1; re-evaluate scope.
 ## TODO(verify)
 
 <!-- Values from T3/T8 whose source could not be confirmed: file, field, why uncertain -->
+
+- `chipdata/chips/esp32s3.yaml` `manual.boot_behavior.pins.GPIO39.state` — MTCK reset pull depends on EFUSE_DIS_PAD_JTAG (ESP32-S3 Datasheet v2.2, Table 2-1 note 7); the At Reset / After Reset columns are ambiguous in the extracted text. Check the rendered PDF or measure.
+- `chipdata/chips/esp32s3.yaml` `manual.boot_behavior.pins.GPIO39.pull` — same as above.
 
 ## Parked
 
