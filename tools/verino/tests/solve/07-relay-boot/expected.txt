@@ -1,0 +1,4 @@
+devices.pump.pin  GPIO1   free pin with no findings
+devices.fan.pin   GPIO2   free pin with no findings
+input.yaml: solved 2 pins
+check after solving: input.yaml: ok (0 errors, 0 warnings, 0 info, 0 acknowledged)

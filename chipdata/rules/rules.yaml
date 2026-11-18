@@ -56,6 +56,12 @@ rules:
     level: 1
     phase: '0'
     facts: [boards/<board>.yaml]
+  E-PIN-005:
+    severity: error
+    name: pin-not-chosen
+    summary: A pin is still set to auto; run verino pins solve to choose it.
+    level: 0
+    phase: '0'
   E-RSV-001:
     severity: error
     name: reserved-memory-pin

@@ -11,6 +11,9 @@ from verino.model import load_hardware
 from verino.render import render_file
 from verino.report import to_dict, to_json, to_text, write_back
 from verino.rules import check
+from verino.solve.output import solve_file
+from verino.solve.output import to_json as solve_json
+from verino.solve.output import to_text as solve_text
 
 app = typer.Typer(
     name="verino",
@@ -106,3 +109,24 @@ def pins_render(
         if not result.files:
             typer.echo(f"{file.as_posix()}: not rendered: {result.reason}", err=True)
     raise typer.Exit(code)
+
+
+@pins_app.command("solve")
+def pins_solve(
+    file: Annotated[
+        Path,
+        typer.Argument(exists=True, dir_okay=False, readable=True, help="hardware.yaml to solve."),
+    ],
+    write: Annotated[
+        bool, typer.Option("--write", help="Write the chosen pins into the file.")
+    ] = False,
+    reassign: Annotated[
+        bool,
+        typer.Option("--reassign", help="Also move unlocked pins with origin: solver."),
+    ] = False,
+    as_json: Annotated[bool, typer.Option("--json", help="Print the result as JSON.")] = False,
+) -> None:
+    """Choose pins for every 'auto' slot. Exit code: 0 solved, 2 no solution or invalid file."""
+    result = solve_file(file, write=write, reassign=reassign)
+    typer.echo(solve_json(result) if as_json else solve_text(result), nl=False)
+    raise typer.Exit(result.exit_code)

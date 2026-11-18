@@ -76,7 +76,14 @@ class Context:
         return locate(self.document, list(path), self.file, key=True)
 
     def pin_uses(self) -> list[PinUse]:
-        """Every assigned pin in file order (buses first, then devices)."""
+        """Every assigned pin in file order; ``auto`` slots are left out (see auto_uses)."""
+        return [u for u in self._all_uses() if not u.assignment.auto]
+
+    def auto_uses(self) -> list[PinUse]:
+        """Pin slots still set to ``auto`` (to be filled by ``verino pins solve``)."""
+        return [u for u in self._all_uses() if u.assignment.auto]
+
+    def _all_uses(self) -> list[PinUse]:
         uses = [
             PinUse("bus", bus.id, role, assignment)
             for bus in self.spec.buses.values()

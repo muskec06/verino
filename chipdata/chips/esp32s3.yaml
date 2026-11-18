@@ -11,6 +11,7 @@ soc_caps:
     commit: 051e4c4eb20346e043cdd47bc388fde75ff8af63
     files:
       - components/esp_common/include/esp_idf_version.h
+      - components/esp_hal_gpspi/esp32s3/include/soc/spi_pins.h
       - components/esp_hal_pcnt/esp32s3/include/hal/pcnt_ll.h
       - components/esp_hal_rmt/esp32s3/include/hal/rmt_ll.h
       - components/soc/esp32s3/include/soc/adc_channel.h
@@ -27,6 +28,8 @@ soc_caps:
     adc1: {GPIO1: 0, GPIO2: 1, GPIO3: 2, GPIO4: 3, GPIO5: 4, GPIO6: 5, GPIO7: 6, GPIO8: 7, GPIO9: 8, GPIO10: 9}
     adc2: {GPIO11: 0, GPIO12: 1, GPIO13: 2, GPIO14: 3, GPIO15: 4, GPIO16: 5, GPIO17: 6, GPIO18: 7, GPIO19: 8, GPIO20: 9}
   rtc_io: {GPIO0: 0, GPIO1: 1, GPIO2: 2, GPIO3: 3, GPIO4: 4, GPIO5: 5, GPIO6: 6, GPIO7: 7, GPIO8: 8, GPIO9: 9, GPIO10: 10, GPIO11: 11, GPIO12: 12, GPIO13: 13, GPIO14: 14, GPIO15: 15, GPIO16: 16, GPIO17: 17, GPIO18: 18, GPIO19: 19, GPIO20: 20, GPIO21: 21}
+  spi_iomux:
+    SPI2: {clk: GPIO12, cs: GPIO10, hd: GPIO9, miso: GPIO13, mosi: GPIO11, wp: GPIO14}
   fixed_pins: {usb_dm: GPIO19, usb_dp: GPIO20, uart0_tx: GPIO43, uart0_rx: GPIO44}
   macros:
     SOC_GPIO_PIN_COUNT: 49

@@ -1,0 +1,8 @@
+# A relay must not click during boot: pins pulled high or glitching at reset are avoided.
+schema: verino-hw/1
+module: esp32-s3-wroom-1-n8r8
+uses: [wifi]
+
+devices:
+  pump: {part: grove-relay, kind: gpio, pin: auto}
+  fan: {part: grove-relay, kind: gpio, pin: auto}

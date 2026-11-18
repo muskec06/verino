@@ -1,0 +1,8 @@
+# Two analog inputs while Wi-Fi is on: ADC1 pins only (ADC2 is shared with Wi-Fi).
+schema: verino-hw/1
+module: esp32-s3-wroom-1-n8r8
+uses: [wifi]
+
+devices:
+  soil: {part: analog_in, kind: adc, pin: auto}
+  light: {part: analog_in, kind: adc, pin: auto}

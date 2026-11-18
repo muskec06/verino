@@ -15,6 +15,9 @@ DeviceKind = Literal["adc", "gpio", "onewire", "pwm"]
 ValidationStatus = Literal["ok", "warnings", "error"]
 Use = Literal["wifi", "ble", "deep_sleep"]
 
+# Pin value left for `verino pins solve` to choose (change note 0006).
+AUTO = "auto"
+
 
 @dataclass(frozen=True, order=True)
 class Location:
@@ -37,6 +40,10 @@ class PinAssignment:
     locked: bool
     loc: Location
     shorthand: bool = False
+
+    @property
+    def auto(self) -> bool:
+        return self.pin == AUTO
 
 
 @dataclass(frozen=True)

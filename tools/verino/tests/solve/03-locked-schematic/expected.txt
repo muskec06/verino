@@ -1,0 +1,5 @@
+buses.uart1.tx     GPIO5   free pin with no findings
+buses.uart1.rx     GPIO6   free pin with no findings
+devices.probe.pin  GPIO4   free pin with no findings
+input.yaml: solved 3 pins
+check after solving: input.yaml: ok (0 errors, 0 warnings, 0 info, 0 acknowledged)

@@ -1,0 +1,19 @@
+# Pins fixed by the schematic stay; the solver works around them.
+schema: verino-hw/1
+module: esp32-s3-wroom-1-n8r8
+uses: [wifi]
+
+buses:
+  i2c0:
+    kind: i2c
+    sda: {pin: GPIO1, origin: schematic, locked: true}
+    scl: {pin: GPIO2, origin: schematic, locked: true}
+    pullups: external_4k7
+  uart1:
+    kind: uart
+    tx: {pin: GPIO5, origin: solver}
+    rx: {pin: GPIO6, origin: solver}
+
+devices:
+  env: {part: bme280, bus: i2c0, addr: 0x76}
+  probe: {part: ds18b20, kind: onewire, pin: {pin: GPIO4, origin: solver}}

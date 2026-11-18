@@ -52,6 +52,11 @@
       "propertyNames": { "$ref": "#/$defs/gpio" },
       "additionalProperties": { "type": "integer", "minimum": 0 }
     },
+    "gpio_to_signal_pin": {
+      "type": "object",
+      "propertyNames": { "pattern": "^[a-z0-9_]+$" },
+      "additionalProperties": { "$ref": "#/$defs/gpio" }
+    },
     "gpio_to_signal": {
       "type": "object",
       "minProperties": 1,
@@ -133,7 +138,7 @@
       "description": "Written only by verino.chipdata.extract_soc_caps.",
       "type": "object",
       "additionalProperties": false,
-      "required": ["provenance", "gpio", "adc", "rtc_io", "fixed_pins", "macros"],
+      "required": ["provenance", "gpio", "adc", "rtc_io", "spi_iomux", "fixed_pins", "macros"],
       "properties": {
         "provenance": {
           "type": "object",
@@ -168,6 +173,12 @@
           "additionalProperties": { "$ref": "#/$defs/gpio_to_int" }
         },
         "rtc_io": { "$ref": "#/$defs/gpio_to_int" },
+        "spi_iomux": {
+          "description": "Quad-mode IO_MUX pins of general-purpose SPI hosts, by signal (clk, mosi, miso, cs, hd, wp).",
+          "type": "object",
+          "propertyNames": { "pattern": "^SPI[0-9]$" },
+          "additionalProperties": { "$ref": "#/$defs/gpio_to_signal_pin" }
+        },
         "fixed_pins": {
           "type": "object",
           "propertyNames": { "pattern": "^[a-z0-9_]+$" },

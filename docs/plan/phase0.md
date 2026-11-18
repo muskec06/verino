@@ -61,10 +61,10 @@ Result (2026-11-18): outputs of `examples/hw/s3-datalogger.yaml` build in an ESP
 
 ## T6 — `verino pins solve`
 
-- [ ] Input: board, requested interfaces/devices, `locked` pins. Output: assignments + a reason for each.
-- [ ] Method: backtracking + scoring. Preferences: board defaults, IO_MUX pins for fast SPI, keep UART0 and USB free, ADC1 when Wi-Fi is used, RTC pins when deep sleep is used.
-- [ ] Solver output always passes `check` (tested).
-- [ ] No solution: explain which constraints conflict.
+- [x] Input: board, requested interfaces/devices, `locked` pins. Output: assignments + a reason for each.
+- [x] Method: backtracking + scoring. Preferences: board defaults, IO_MUX pins for fast SPI, keep UART0 and USB free, ADC1 when Wi-Fi is used, RTC pins when deep sleep is used. (Board defaults need board data and move to T8.)
+- [x] Solver output always passes `check` (tested).
+- [x] No solution: explain which constraints conflict.
 
 **Done when:** 10-scenario test set; deterministic solutions; `locked` pins never change.
 
@@ -82,6 +82,7 @@ Result (2026-11-18): outputs of `examples/hw/s3-datalogger.yaml` build in an ESP
 - [ ] `chipdata/modules/`: ESP32-WROOM-32 and ESP32-WROVER (GPIO16/17 PSRAM).
 - [ ] `chipdata/boards/esp32-s3-devkitc-1.yaml` (RGB LED alias: v1.0 GPIO48, v1.1 GPIO38) and `chipdata/boards/esp32-devkitc.yaml`.
 - [ ] All rules tested with fixtures on both chips.
+- [ ] Solver prefers board default pins (`origin: board_default`) once board data exists (left over from T6).
 
 **Done when:** all rules green on both chips; board aliases resolve.
 

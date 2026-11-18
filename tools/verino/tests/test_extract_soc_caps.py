@@ -35,6 +35,7 @@ def test_extract_reads_all_headers() -> None:
     }
     assert block["adc"] == {"adc1": {"GPIO1": 0, "GPIO2": 1}, "adc2": {"GPIO5": 0}}
     assert block["rtc_io"] == {"GPIO0": 0, "GPIO1": 2, "GPIO2": 1}
+    assert block["spi_iomux"] == {"SPI2": {"clk": "GPIO12", "mosi": "GPIO11"}}
     assert block["fixed_pins"] == {
         "usb_dm": "GPIO7",
         "usb_dp": "GPIO8",

@@ -1,0 +1,16 @@
+# Analog input with Wi-Fi off; ADC1 pins are taken by the schematic, so ADC2 is fine.
+schema: verino-hw/1
+module: esp32-s3-wroom-1-n8r8
+uses: []
+
+devices:
+  a1: {part: analog_in, kind: adc, pin: {pin: GPIO1, origin: schematic, locked: true}}
+  a2: {part: analog_in, kind: adc, pin: {pin: GPIO2, origin: schematic, locked: true}}
+  a3: {part: analog_in, kind: adc, pin: {pin: GPIO4, origin: schematic, locked: true}}
+  a4: {part: analog_in, kind: adc, pin: {pin: GPIO5, origin: schematic, locked: true}}
+  a5: {part: analog_in, kind: adc, pin: {pin: GPIO6, origin: schematic, locked: true}}
+  a6: {part: analog_in, kind: adc, pin: {pin: GPIO7, origin: schematic, locked: true}}
+  a7: {part: analog_in, kind: adc, pin: {pin: GPIO8, origin: schematic, locked: true}}
+  a8: {part: analog_in, kind: adc, pin: {pin: GPIO9, origin: schematic, locked: true}}
+  a9: {part: analog_in, kind: adc, pin: {pin: GPIO10, origin: schematic, locked: true}}
+  extra: {part: analog_in, kind: adc, pin: auto}

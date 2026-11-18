@@ -1,0 +1,3 @@
+devices.extra.pin  GPIO11  ADC2 channel 0
+input.yaml: solved 1 pin
+check after solving: input.yaml: ok (0 errors, 0 warnings, 0 info, 0 acknowledged)

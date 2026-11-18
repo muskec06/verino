@@ -1,0 +1,4 @@
+devices.soil.pin   GPIO1   ADC1 channel 0
+devices.light.pin  GPIO2   ADC1 channel 1
+input.yaml: solved 2 pins
+check after solving: input.yaml: ok (0 errors, 0 warnings, 0 info, 0 acknowledged)

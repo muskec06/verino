@@ -1,0 +1,8 @@
+# Deep sleep in use: device pins prefer RTC-capable GPIOs.
+schema: verino-hw/1
+module: esp32-s3-wroom-1-n8r8
+uses: [deep_sleep]
+
+devices:
+  button: {part: button, kind: gpio, pin: auto}
+  probe: {part: ds18b20, kind: onewire, pin: auto}
