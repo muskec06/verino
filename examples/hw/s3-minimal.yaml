@@ -1,0 +1,13 @@
+# Smallest useful file: board, module and one sensor.
+schema: verino-hw/1
+board: esp32-s3-devkitc-1
+module: esp32-s3-wroom-1-n8r8
+
+buses:
+  i2c0:
+    kind: i2c
+    sda: {pin: GPIO8, origin: board_default}
+    scl: {pin: GPIO9, origin: board_default}
+
+devices:
+  env: {part: bme280, bus: i2c0, addr: 0x77}

@@ -1,0 +1,21 @@
+# Weather station on an ESP32-DevKitC.
+schema: verino-hw/1
+source: native
+board: esp32-devkitc
+module: esp32-wroom-32
+chip_rev: v3.0
+
+buses:
+  i2c0:
+    kind: i2c
+    sda: {pin: GPIO21, origin: user}
+    scl: {pin: GPIO22, origin: user}
+    freq_hz: 100000
+    pullups: internal
+
+devices:
+  env: {part: bme280, bus: i2c0, addr: 0x76}
+  air_temp: {part: ds18b20, kind: onewire, pin: GPIO27}
+
+ack:
+  - {rule: W-BOOT-010, pin: GPIO27, reason: "Illustrates the ack format"}

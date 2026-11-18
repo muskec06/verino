@@ -1,0 +1,9 @@
+# Invalid: a bus pin without `origin`.
+schema: verino-hw/1
+module: esp32-s3-wroom-1-n8r8
+
+buses:
+  i2c0:
+    kind: i2c
+    sda: {pin: GPIO8}
+    scl: {pin: GPIO9, origin: board_default}

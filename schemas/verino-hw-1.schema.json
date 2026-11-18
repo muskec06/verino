@@ -1,0 +1,273 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "$id": "https://verino.dev/schemas/verino-hw-1.schema.json",
+  "title": "Verino hardware description (verino-hw/1)",
+  "description": "Board, module, memory, buses and device connections of one hardware revision. Reference: docs/hardware-yaml.md.",
+  "type": "object",
+  "additionalProperties": false,
+  "required": ["schema", "module"],
+  "properties": {
+    "schema": { "const": "verino-hw/1" },
+    "source": {
+      "description": "Where the file comes from. Phase 0 supports only 'native'.",
+      "const": "native"
+    },
+    "board": { "$ref": "#/$defs/identifier" },
+    "board_rev": { "$ref": "#/$defs/revision" },
+    "module": { "$ref": "#/$defs/identifier" },
+    "chip_rev": { "type": "string", "pattern": "^v[0-9]+\\.[0-9]+$" },
+    "hw_rev": { "$ref": "#/$defs/revision" },
+    "memory": { "$ref": "#/$defs/memory" },
+    "buses": {
+      "type": "object",
+      "propertyNames": { "$ref": "#/$defs/local_id" },
+      "additionalProperties": { "$ref": "#/$defs/bus" }
+    },
+    "devices": {
+      "type": "object",
+      "propertyNames": { "$ref": "#/$defs/local_id" },
+      "additionalProperties": { "$ref": "#/$defs/device" }
+    },
+    "ack": {
+      "type": "array",
+      "items": { "$ref": "#/$defs/ack" }
+    },
+    "reserved": {
+      "description": "Written by tools only.",
+      "type": "array",
+      "items": { "$ref": "#/$defs/reserved" }
+    },
+    "validation": { "$ref": "#/$defs/validation" }
+  },
+  "$defs": {
+    "identifier": {
+      "description": "Catalog identifier (board, module, part, preset).",
+      "type": "string",
+      "pattern": "^[a-z0-9][a-z0-9._-]*$"
+    },
+    "local_id": {
+      "description": "Name of a bus or device inside this file.",
+      "type": "string",
+      "pattern": "^[a-z][a-z0-9_]*$"
+    },
+    "revision": {
+      "type": "string",
+      "pattern": "^[A-Za-z0-9][A-Za-z0-9._-]*$"
+    },
+    "pin_name": {
+      "description": "Canonical GPIO name (GPIO8) or a board alias (LED_RGB, BOOT).",
+      "type": "string",
+      "pattern": "^(GPIO(0|[1-9][0-9]?)|(?!GPIO)[A-Z][A-Z0-9_]*)$"
+    },
+    "origin": {
+      "enum": ["schematic", "user", "board_default", "solver", "cubemx"]
+    },
+    "pin_assignment": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": ["pin", "origin"],
+      "properties": {
+        "pin": { "$ref": "#/$defs/pin_name" },
+        "origin": { "$ref": "#/$defs/origin" },
+        "locked": { "type": "boolean" }
+      }
+    },
+    "pin_ref": {
+      "description": "Device pin: shorthand pin name (origin: user) or a full assignment. See docs/changes/0001.",
+      "oneOf": [
+        { "$ref": "#/$defs/pin_name" },
+        { "$ref": "#/$defs/pin_assignment" }
+      ]
+    },
+    "size": {
+      "type": "string",
+      "pattern": "^[1-9][0-9]*(K|KB|M|MB)$"
+    },
+    "freq": {
+      "type": "string",
+      "pattern": "^[1-9][0-9]*m$"
+    },
+    "positive_int": { "type": "integer", "minimum": 1 },
+    "memory_origin": { "enum": ["module", "user"] },
+    "flash": {
+      "type": "object",
+      "additionalProperties": false,
+      "properties": {
+        "size": { "$ref": "#/$defs/size" },
+        "mode": { "enum": ["qio", "qout", "dio", "dout"] },
+        "freq": { "$ref": "#/$defs/freq" },
+        "origin": { "$ref": "#/$defs/memory_origin" }
+      }
+    },
+    "psram": {
+      "type": "object",
+      "additionalProperties": false,
+      "properties": {
+        "size": { "$ref": "#/$defs/size" },
+        "mode": { "enum": ["quad", "octal"] },
+        "freq": { "$ref": "#/$defs/freq" },
+        "origin": { "$ref": "#/$defs/memory_origin" }
+      }
+    },
+    "partition": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": ["name", "type", "subtype", "size"],
+      "properties": {
+        "name": { "type": "string", "pattern": "^[A-Za-z0-9_]{1,16}$" },
+        "type": { "enum": ["app", "data"] },
+        "subtype": { "type": "string", "pattern": "^[a-z0-9_]+$" },
+        "size": {
+          "anyOf": [{ "$ref": "#/$defs/size" }, { "const": "rest" }]
+        }
+      }
+    },
+    "memory": {
+      "type": "object",
+      "additionalProperties": false,
+      "properties": {
+        "flash": { "$ref": "#/$defs/flash" },
+        "psram": { "$ref": "#/$defs/psram" },
+        "cpu_freq_mhz": { "$ref": "#/$defs/positive_int" },
+        "partitions": {
+          "type": "object",
+          "additionalProperties": false,
+          "minProperties": 1,
+          "properties": {
+            "preset": { "$ref": "#/$defs/identifier" },
+            "custom": {
+              "type": "array",
+              "minItems": 1,
+              "items": { "$ref": "#/$defs/partition" }
+            }
+          }
+        }
+      }
+    },
+    "bus": {
+      "type": "object",
+      "required": ["kind"],
+      "properties": {
+        "kind": { "enum": ["i2c", "spi", "uart"] }
+      },
+      "allOf": [
+        {
+          "if": { "properties": { "kind": { "const": "i2c" } } },
+          "then": { "$ref": "#/$defs/i2c_bus" }
+        },
+        {
+          "if": { "properties": { "kind": { "const": "spi" } } },
+          "then": { "$ref": "#/$defs/spi_bus" }
+        },
+        {
+          "if": { "properties": { "kind": { "const": "uart" } } },
+          "then": { "$ref": "#/$defs/uart_bus" }
+        }
+      ]
+    },
+    "i2c_bus": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": ["kind", "sda", "scl"],
+      "properties": {
+        "kind": { "const": "i2c" },
+        "sda": { "$ref": "#/$defs/pin_assignment" },
+        "scl": { "$ref": "#/$defs/pin_assignment" },
+        "freq_hz": { "$ref": "#/$defs/positive_int" },
+        "pullups": {
+          "type": "string",
+          "pattern": "^(none|internal|external(_[0-9]+k[0-9]*)?)$"
+        }
+      }
+    },
+    "spi_bus": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": ["kind", "sclk"],
+      "properties": {
+        "kind": { "const": "spi" },
+        "host": { "type": "string", "pattern": "^SPI[0-9]$" },
+        "sclk": { "$ref": "#/$defs/pin_assignment" },
+        "mosi": { "$ref": "#/$defs/pin_assignment" },
+        "miso": { "$ref": "#/$defs/pin_assignment" }
+      }
+    },
+    "uart_bus": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": ["kind"],
+      "anyOf": [{ "required": ["tx"] }, { "required": ["rx"] }],
+      "properties": {
+        "kind": { "const": "uart" },
+        "tx": { "$ref": "#/$defs/pin_assignment" },
+        "rx": { "$ref": "#/$defs/pin_assignment" },
+        "rts": { "$ref": "#/$defs/pin_assignment" },
+        "cts": { "$ref": "#/$defs/pin_assignment" },
+        "baud": { "$ref": "#/$defs/positive_int" }
+      }
+    },
+    "device": {
+      "description": "A connected part. Keys other than the listed ones are pin roles from the part manifest (cs, int, rst, trig, echo, ...).",
+      "type": "object",
+      "required": ["part"],
+      "properties": {
+        "part": { "$ref": "#/$defs/identifier" },
+        "bus": { "$ref": "#/$defs/local_id" },
+        "kind": { "enum": ["adc", "gpio", "onewire", "pwm"] },
+        "addr": { "type": "integer", "minimum": 0, "maximum": 1023 },
+        "freq_hz": { "$ref": "#/$defs/positive_int" }
+      },
+      "propertyNames": { "pattern": "^[a-z][a-z0-9_]*$" },
+      "additionalProperties": { "$ref": "#/$defs/pin_ref" }
+    },
+    "ack": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": ["rule", "reason"],
+      "properties": {
+        "rule": { "type": "string", "pattern": "^[EWI]-[A-Z0-9]+-[0-9]{3}$" },
+        "pin": { "$ref": "#/$defs/pin_name" },
+        "device": { "$ref": "#/$defs/local_id" },
+        "reason": { "type": "string", "minLength": 1, "pattern": "\\S" }
+      }
+    },
+    "pin_range": {
+      "type": "string",
+      "pattern": "^GPIO(0|[1-9][0-9]?)-GPIO(0|[1-9][0-9]?)$"
+    },
+    "reserved": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": ["pins", "why"],
+      "properties": {
+        "pins": {
+          "oneOf": [
+            { "$ref": "#/$defs/pin_range" },
+            {
+              "type": "array",
+              "minItems": 1,
+              "items": { "$ref": "#/$defs/pin_name" }
+            }
+          ]
+        },
+        "why": { "type": "string", "pattern": "^[a-z0-9_]+$" }
+      }
+    },
+    "validation": {
+      "description": "Written by tools only.",
+      "type": "object",
+      "additionalProperties": false,
+      "required": ["tool", "chipdata", "status", "checksum"],
+      "properties": {
+        "tool": { "type": "string", "minLength": 1 },
+        "chipdata": { "type": "string", "minLength": 1 },
+        "status": { "enum": ["ok", "warnings", "error"] },
+        "warnings": {
+          "type": "array",
+          "items": { "type": "string", "pattern": "^[EWI]-[A-Z0-9]+-[0-9]{3}$" }
+        },
+        "checksum": { "type": "string", "pattern": "^sha256:[0-9a-f]{64}$" }
+      }
+    }
+  }
+}

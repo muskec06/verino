@@ -1,0 +1,40 @@
+# Greenhouse controller on an ESP32-S3-DevKitC-1 (v1.1).
+# Memory values follow the module; `verino pins check` compares them with module data.
+schema: verino-hw/1
+source: native
+board: esp32-s3-devkitc-1
+board_rev: v1.1
+module: esp32-s3-wroom-1-n16r8
+hw_rev: A
+
+memory:
+  flash: {size: 16MB, mode: qio, freq: 80m, origin: module}
+  psram: {size: 8MB, mode: octal, freq: 80m, origin: module}
+  cpu_freq_mhz: 240
+  partitions:
+    custom:
+      - {name: nvs, type: data, subtype: nvs, size: 24K}
+      - {name: otadata, type: data, subtype: ota, size: 8K}
+      - {name: app0, type: app, subtype: ota_0, size: 4M}
+      - {name: app1, type: app, subtype: ota_1, size: 4M}
+      - {name: storage, type: data, subtype: littlefs, size: rest}
+
+buses:
+  i2c0:
+    kind: i2c
+    sda: {pin: GPIO8, origin: board_default}
+    scl: {pin: GPIO9, origin: board_default}
+    freq_hz: 400000
+    pullups: external_4k7
+  uart1:
+    kind: uart
+    tx: {pin: GPIO17, origin: schematic, locked: true}   # wired to the RS-485 transceiver
+    rx: {pin: GPIO18, origin: schematic, locked: true}
+    baud: 9600
+
+devices:
+  env: {part: bme280, bus: i2c0, addr: 0x76}
+  soil_temp: {part: ds18b20, kind: onewire, pin: GPIO4}
+  status: {part: ws2812, pin: LED_RGB}   # board alias, resolved per board_rev
+  pump: {part: relay-module, kind: gpio, pin: {pin: GPIO5, origin: user}}
+  tank: {part: hc-sr04, kind: gpio, trig: GPIO15, echo: GPIO16}

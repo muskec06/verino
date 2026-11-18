@@ -1,0 +1,6 @@
+# Invalid: every acknowledgement needs a reason.
+schema: verino-hw/1
+module: esp32-s3-wroom-1-n8r8
+
+ack:
+  - {rule: W-BOOT-010, pin: GPIO5}
