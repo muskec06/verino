@@ -10,10 +10,10 @@ Rules: tasks run in order; one branch/PR per task; a task is ticked only when ev
 
 ## T1 — Repository skeleton
 
-- [ ] Folder layout per `AGENTS.md` → "Repository layout"; `README.md`, `LICENSE` (Apache-2.0), `.gitignore`, `.gitattributes`, `.editorconfig`, `CHANGELOG.md` and community files already present; extend `.gitignore` only if needed.
-- [ ] `tools/verino/pyproject.toml`: Python ≥ 3.11; deps `ruamel.yaml`, `jsonschema`, `typer`, `jinja2`, `mcp`; dev deps `pytest`, `ruff`, `mypy`. Project URLs point to `https://verino.dev`.
-- [ ] `verino --version` and an empty `verino pins` command group; `vrn` alias entry point.
-- [ ] GitHub Actions: `lint` (ruff, mypy) and `test` (pytest) on Python 3.11 and 3.13, on Ubuntu and Windows; DCO check (skip if the DCO GitHub App is installed). Job names must stay `lint` and `test` (used by branch protection).
+- [x] Folder layout per `AGENTS.md` → "Repository layout"; `README.md`, `LICENSE` (Apache-2.0), `.gitignore`, `.gitattributes`, `.editorconfig`, `CHANGELOG.md` and community files already present; extend `.gitignore` only if needed.
+- [x] `tools/verino/pyproject.toml`: Python ≥ 3.11; deps `ruamel.yaml`, `jsonschema`, `typer`, `jinja2`, `mcp`; dev deps `pytest`, `ruff`, `mypy`. Project URLs point to `https://verino.dev`.
+- [x] `verino --version` and an empty `verino pins` command group; `vrn` alias entry point.
+- [x] GitHub Actions: `lint` (ruff, mypy) and `test` (pytest) on Python 3.11 and 3.13, on Ubuntu and Windows; DCO check (skip if the DCO GitHub App is installed). Job names must stay `lint` and `test` (used by branch protection).
 
 **Done when:** `pip install -e ".[dev]"` then `verino --version` works; CI is green.
 
