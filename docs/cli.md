@@ -90,3 +90,41 @@ set(SDKCONFIG_DEFAULTS "sdkconfig.defaults;gen/sdkconfig.defaults")
 `CONFIG_PARTITION_TABLE_CUSTOM_FILENAME` points at `gen/partitions.csv`, relative to the project root. Add `gen/` to the include path of the component that uses `pins.hpp`.
 
 JSON output (`verino-render/1`): `file`, `written` (paths), `reason` (why nothing was written, or `null`) and the full check `report`.
+
+## `verino pins solve`
+
+```bash
+verino pins solve hardware.yaml               # print proposed pins and reasons
+verino pins solve hardware.yaml --write       # write them as {pin: GPIOn, origin: solver}
+verino pins solve hardware.yaml --reassign    # also move unlocked origin: solver pins
+verino pins solve hardware.yaml --json        # verino-solve/1
+```
+
+Fills every pin set to `auto` ([format](hardware-yaml.md#pins)). Pins already assigned stay where they are; `locked: true` pins never move, even with `--reassign`.
+
+| Exit code | Meaning |
+| --- | --- |
+| 0 | solved, or nothing to solve |
+| 2 | no solution, or the file has other errors (fix those first) |
+
+### How pins are chosen
+
+1. For each open slot every GPIO of the chip is tried, and the real rule set runs on the file with that one pin filled in. A pin that causes an error on the slot is rejected; warnings and infos lower its score.
+2. Preferences add to the score: the SPI host's IO_MUX pin for `sclk`/`mosi`/`miso`/`cs` (+50), an RTC-capable pin for device pins when `uses` has `deep_sleep` (+20). Strapping pins and pins shared with USB, UART0 or JTAG cost −30 each; every accepted warning costs −100 and every info −10.
+3. Slots are filled most-constrained first, candidates best-first, with branch-and-bound on the total score (at most 200 complete assignments). Each complete assignment is checked as a whole; the best one without errors wins. Ties go to the lower GPIO number, so the result is deterministic.
+
+Each chosen pin is printed with its reasons:
+
+```text
+buses.spi2.sclk   GPIO12  SPI2 IO_MUX pin for CLK
+devices.soil.pin  GPIO1   ADC1 channel 0
+```
+
+When a slot has no usable pin, the output counts why each GPIO was rejected:
+
+```text
+no pin satisfies device 'tank' (echo) at devices.tank.echo; all 45 GPIOs rejected (a pin can fail several rules):
+  E-VOLT-001: 45
+```
+
+Board default pins are not used yet: they need board data (T8).
